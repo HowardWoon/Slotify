@@ -3,106 +3,783 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slotify - Smart Parking System</title>
+    <title>Slotify - Smart Parking</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #2c3e50; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
-        input, button { width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
-        button { background-color: #3498db; color: white; border: none; cursor: pointer; font-weight: bold; }
-        button:hover { background-color: #2980b9; }
-        .btn-danger { background-color: #e74c3c; }
-        .btn-danger:hover { background-color: #c0392b; }
-        .btn-success { background-color: #2ecc71; }
-        .btn-success:hover { background-color: #27ae60; }
-        #console { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; margin-top: 20px; min-height: 100px; font-family: monospace; white-space: pre-wrap; }
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --sidebar-bg: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body { display: flex; height: 100vh; background-color: var(--bg-color); color: var(--text-main); overflow: hidden; }
+
+        /* Sidebar Navigation */
+        .sidebar { width: 250px; background-color: var(--sidebar-bg); color: white; display: flex; flex-direction: column; padding: 20px 0; }
+        .logo { font-size: 24px; font-weight: bold; padding: 0 20px 20px; border-bottom: 1px solid #334155; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .nav-item { padding: 15px 20px; cursor: pointer; transition: 0.2s; font-weight: 500; color: #cbd5e1; }
+        .nav-item:hover { background-color: #1e293b; color: white; }
+        .nav-item.active { background-color: var(--primary); color: white; border-left: 4px solid #60a5fa; }
+
+        /* Main Content Area */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        
+        /* Top Header Stats */
+        .header-stats { display: flex; gap: 20px; padding: 20px 30px; background: var(--card-bg); border-bottom: 1px solid var(--border); }
+        .stat-card { flex: 1; padding: 15px; border-radius: 8px; background: var(--bg-color); border: 1px solid var(--border); }
+        .stat-card h4 { color: var(--text-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card h2 { font-size: 28px; margin-top: 5px; color: var(--primary); }
+
+        /* Tab Views */
+        .tab-content { padding: 30px; display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Cards & Forms */
+        .card { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border); margin-bottom: 20px; }
+        .card-header { font-size: 18px; font-weight: 600; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 14px; margin-bottom: 5px; color: var(--text-muted); }
+        input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; transition: 0.2s; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        button { padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; color: white; font-size: 14px; }
+        button.primary { background: var(--primary); }
+        button.primary:hover { background: var(--primary-hover); }
+        button.success { background: var(--success); }
+        button.success:hover { background: #059669; }
+        button.danger { background: var(--danger); }
+        button.danger:hover { background: #dc2626; }
+
+        /* Map Placeholder */
+        .map-container { width: 100%; height: 400px; background: #1e293b; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #64748b; font-family: monospace; }
+
+        /* Results Area */
+        .result-box { margin-top: 15px; padding: 15px; border-radius: 6px; background: var(--bg-color); border: 1px dashed var(--border); font-family: monospace; white-space: pre-wrap; }
+
+        /* Toast Notifications */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
+        .toast { background: white; border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 6px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; animation: slideIn 0.3s ease-out forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { to { transform: translateX(100%); opacity: 0; } }
+
+        /* System Log */
+        .system-log-wrapper { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 999; max-height: 300px; transition: max-height 0.3s ease; overflow: hidden; }
+        .system-log-wrapper.collapsed { max-height: 0; }
+        .system-log-header { padding: 12px 20px; background: #f8fafc; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .system-log-header h3 { font-size: 14px; font-weight: 600; color: var(--text-main); margin: 0; }
+        .system-log-toggle { font-size: 12px; color: var(--text-muted); transition: 0.2s; }
+        .system-log-wrapper.collapsed .system-log-toggle::before { content: '▼ '; }
+        .system-log-wrapper:not(.collapsed) .system-log-toggle::before { content: '▲ '; }
+        .system-log-content { overflow-y: auto; max-height: 260px; padding: 10px 0; background: white; }
+        .log-entry { padding: 8px 20px; border-bottom: 1px solid var(--border); font-size: 13px; display: flex; gap: 12px; animation: slideIn 0.2s ease-out; }
+        .log-entry:hover { background: var(--bg-color); }
+        .log-time { color: var(--text-muted); min-width: 100px; font-family: monospace; font-size: 12px; }
+        .log-tag { padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: 600; min-width: 70px; text-align: center; }
+        .log-tag.arrival { background: #dbeafe; color: #1e40af; }
+        .log-tag.process { background: #dcfce7; color: #166534; }
+        .log-tag.exit { background: #fee2e2; color: #991b1b; }
+        .log-tag.search { background: #f3e8ff; color: #6b21a8; }
+        .log-tag.undo { background: #fef3c7; color: #92400e; }
+        .log-message { flex: 1; color: var(--text-main); }
+        .system-log-actions { padding: 10px 20px; display: flex; gap: 10px; border-top: 1px solid var(--border); }
+        .log-clear-btn { padding: 6px 12px; font-size: 12px; background: var(--border); color: var(--text-main); border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .log-clear-btn:hover { background: #cbd5e1; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🚗 Slotify Dashboard</h1>
-    
-    <div class="grid">
-        <div class="card">
-            <h3>1. Vehicle Entry (Queue)</h3>
-            <input type="text" id="plate" placeholder="Plate Number (e.g., WXA1234)">
-            <input type="text" id="name" placeholder="Owner Name">
-            <button onclick="arrive()">Register Vehicle at Gate</button>
+    <aside class="sidebar">
+        <div class="logo">🚙 Slotify</div>
+        <div class="nav-item active" onclick="switchTab('map')">🗺️ Live Map</div>
+        <div class="nav-item" onclick="switchTab('gate')">🚧 Gate Control</div>
+        <div class="nav-item" onclick="switchTab('database')">🗃️ Database</div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header-stats">
+            <div class="stat-card">
+                <h4>Total Recorded</h4>
+                <h2 id="stat-total">0</h2>
+            </div>
+            <div class="stat-card">
+                <h4>Queue Length</h4>
+                <h2 id="stat-queue">0</h2>
+            </div>
+            <div class="stat-card">
+                <h4>Available Slots</h4>
+                <h2 id="stat-available">0</h2>
+            </div>
+            <div class="stat-card">
+                <h4>System Status</h4>
+                <h2 style="color: var(--success);">Online</h2>
+            </div>
         </div>
 
-        <div class="card">
-            <h3>2. Gate Operations</h3>
-            <button class="btn-success" onclick="process()">Process Next & Assign Slot (Min-Heap)</button>
-            <button class="btn-danger" onclick="undo()">Undo Last Entry (Stack)</button>
+        <div id="view-map" class="tab-content active">
+            <div class="card">
+                <div class="card-header">Live Parking Lot Topology</div>
+                <div class="map-container" id="parking-map">
+                    [ Parking Graph / Canvas Goes Here ]
+                </div>
+            </div>
         </div>
 
-        <div class="card">
-            <h3>3. Search System</h3>
-            <input type="text" id="searchPlate" placeholder="Plate Number to Search">
-            <button onclick="searchVehicle()">Search (BST & HashMap)</button>
+        <div id="view-gate" class="tab-content">
+            <div class="card" style="max-width: 500px;">
+                <div class="card-header">Vehicle Entry (Queue)</div>
+                <div class="form-group">
+                    <label>License Plate Number</label>
+                    <input type="text" id="plate" placeholder="e.g. WIA1002">
+                </div>
+                <div class="form-group">
+                    <label>Owner Name</label>
+                    <input type="text" id="name" placeholder="e.g. Howard">
+                </div>
+                <button class="primary" onclick="arrive()" style="width: 100%;">Add to Queue</button>
+            </div>
+
+            <div class="card" style="max-width: 500px;">
+                <div class="card-header">Gate Operations</div>
+                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px;">Process the next vehicle using the Min-Heap algorithm, or reverse the last entry.</p>
+                <div class="btn-row">
+                    <button class="success" style="flex: 1;" onclick="process()">Process Next Vehicle</button>
+                    <button class="danger" onclick="undo()">Undo Entry</button>
+                </div>
+                <div id="processResult" style="margin-top:20px;display:none">
+                    <div style="background:var(--bg-color);padding:12px;border-radius:6px;border-left:4px solid var(--success)">
+                        <div style="font-weight:600;color:var(--text-main);margin-bottom:8px">Assigned Slot: <span id="resultSlot" style="color:var(--primary)">—</span></div>
+                        <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Shortest Path:</div>
+                        <div id="resultPath" style="font-family:monospace;font-size:12px;color:var(--primary);line-height:1.6"></div>
+                    </div>
+                </div>
+                <div style="margin-top:12px">
+                    <label style="font-size:13px;color:var(--text-muted)">Vehicle Exit (plate)</label>
+                    <div style="display:flex;gap:8px;margin-top:6px">
+                        <input id="exitPlate" placeholder="Plate to exit" style="flex:1;padding:8px;border-radius:6px;border:1px solid var(--border)" />
+                        <button class="primary" onclick="exitVehicle()">Process Exit</button>
+                    </div>
+                    <div id="exitFeedback" style="margin-top:8px;color:var(--text-muted)"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="card">
-            <h3>4. View All Records</h3>
-            <button onclick="viewAll()">Display Linked List</button>
+        <div id="view-database" class="tab-content">
+            <div class="card">
+                <div class="card-header">Search Vehicle (O(log n) BST Lookup)</div>
+                <div class="btn-row" style="margin-top: 0;">
+                    <input type="text" id="searchPlate" placeholder="Enter Plate Number" style="flex: 1;">
+                    <button class="primary" onclick="searchVehicle()">Search</button>
+                </div>
+                <div class="result-box" id="search-result">Awaiting search query...</div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">All Records (Linked List - Most Recent First)</div>
+                <button class="primary" onclick="viewAll()">Display All Records</button>
+                <div class="result-box" id="all-records">Click Display All Records to load database.</div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast-container"></div>
+    <div id="system-log" class="system-log-wrapper collapsed">
+        <div class="system-log-header" onclick="toggleSystemLog()">
+            <h3>📋 System Log</h3>
+            <span class="system-log-toggle"></span>
+        </div>
+        <div class="system-log-content" id="log-entries">
+            <!-- Log entries appended here -->
+        </div>
+        <div class="system-log-actions">
+            <button class="log-clear-btn" onclick="clearSystemLog()">Clear Log</button>
         </div>
     </div>
 
-    <h3>System Output:</h3>
-    <div id="console">System initialized. Waiting for input...</div>
-</div>
+    <script>
+        let totalCount = 0;
+        let systemLog = [];
 
-<script>
-    function logMessage(msg) {
-        document.getElementById('console').innerText = msg + '\n' + document.getElementById('console').innerText;
-    }
+        // --- System Log Functions ---
+        function formatTime(date) {
+            const h = String(date.getHours()).padStart(2, '0');
+            const m = String(date.getMinutes()).padStart(2, '0');
+            const s = String(date.getSeconds()).padStart(2, '0');
+            return `${h}:${m}:${s}`;
+        }
 
-    async function arrive() {
-        const plate = document.getElementById('plate').value;
-        const name = document.getElementById('name').value;
-        if(!plate || !name) return alert("Please fill both fields.");
-        
-        const res = await fetch(`/api/arrive?plate=${plate}&name=${name}`, { method: 'POST' });
-        const data = await res.json();
-        logMessage(`[ENTRY] ${data.message}`);
-    }
+        function addLogEntry(tag, message) {
+            const entry = {
+                time: new Date(),
+                tag: tag,
+                message: message
+            };
+            systemLog.unshift(entry);  // Add to front (most recent first)
+            renderLogEntry(entry);
+        }
 
-    async function process() {
-        const res = await fetch(`/api/process`, { method: 'POST' });
-        const data = await res.json();
-        logMessage(`[PROCESS] ${data.message}`);
-    }
-
-    async function undo() {
-        const res = await fetch(`/api/undo`, { method: 'POST' });
-        const data = await res.json();
-        logMessage(`[UNDO] ${data.message}`);
-    }
-
-    async function searchVehicle() {
-        const plate = document.getElementById('searchPlate').value;
-        const res = await fetch(`/api/search?plate=${plate}`);
-        if(res.ok) {
-            const text = await res.text();
-            if(text) {
-                const data = JSON.parse(text);
-                logMessage(`[SEARCH] Found: ${data.plateNumber} belonging to ${data.ownerName}`);
-            } else {
-                logMessage(`[SEARCH] Vehicle ${plate} not found.`);
+        function renderLogEntry(entry) {
+            const logContent = document.getElementById('log-entries');
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'log-entry';
+            entryDiv.innerHTML = `
+                <span class="log-time">${formatTime(entry.time)}</span>
+                <span class="log-tag ${entry.tag.toLowerCase()}">${entry.tag}</span>
+                <span class="log-message">${entry.message}</span>
+            `;
+            logContent.insertBefore(entryDiv, logContent.firstChild);
+            
+            // Keep only last 100 entries
+            while (logContent.children.length > 100) {
+                logContent.removeChild(logContent.lastChild);
             }
         }
-    }
 
-    async function viewAll() {
-        const res = await fetch(`/api/all`);
-        const data = await res.json();
-        let list = data.map(v => `${v.plateNumber} (${v.ownerName})`).join(', ');
-        logMessage(`[LINKED LIST] Records: ${list || 'Empty'}`);
-    }
-</script>
+        function toggleSystemLog() {
+            const logWrapper = document.getElementById('system-log');
+            logWrapper.classList.toggle('collapsed');
+        }
 
+        function clearSystemLog() {
+            if (confirm('Clear all log entries?')) {
+                systemLog = [];
+                document.getElementById('log-entries').innerHTML = '';
+                addLogEntry('SYSTEM', 'Log cleared');
+            }
+        }
+
+        // --- Navigation Logic ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('view-' + tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- Toast Notification System ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<strong>System:</strong> <span style="margin-left: 10px;">${message}</span>`;
+            
+            if(type === 'error') toast.style.borderLeftColor = 'var(--danger)';
+            if(type === 'success') toast.style.borderLeftColor = 'var(--success)';
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // --- API Calls ---
+        async function arrive() {
+            const plate = document.getElementById('plate').value;
+            const name = document.getElementById('name').value;
+            if(!plate || !name) return showToast("Please fill both fields.", "error");
+            
+            const res = await fetch(`/api/arrive?plate=${plate}&name=${name}`, { method: 'POST' });
+            const data = await res.json();
+            
+            document.getElementById('stat-queue').innerText = data.queueSize;
+            totalCount++;
+            document.getElementById('stat-total').innerText = totalCount;
+            
+            showToast(`${plate} added to queue.`, "success");
+            document.getElementById('plate').value = '';
+            document.getElementById('name').value = '';
+        }
+
+        async function process() {
+            const res = await fetch(`/api/process`, { method: 'POST' });
+            const data = await res.json();
+            
+            showToast(data.message);
+            // In a real scenario, you'd fetch the queue size again here to decrement it
+        }
+
+        async function undo() {
+            const res = await fetch(`/api/undo`, { method: 'POST' });
+            const data = await res.json();
+            showToast(data.message, "error");
+            if (data.message.includes('Reversed')) {
+                clearProcessResult();
+                clearRouteHighlight();
+            }
+        }
+
+        async function searchVehicle() {
+            const plate = document.getElementById('searchPlate').value;
+            const res = await fetch(`/api/search?plate=${plate}`);
+            const resultBox = document.getElementById('search-result');
+            
+            if(res.ok) {
+                const text = await res.text();
+                if(text) {
+                    const data = JSON.parse(text);
+                    resultBox.innerHTML = `<span style="color:var(--success)">Found:</span> Plate <b>${data.plateNumber}</b> belongs to ${data.ownerName}`;
+                    addLogEntry('SEARCH', `Found plate ${plate} (${data.ownerName})`);
+                } else {
+                    resultBox.innerHTML = `<span style="color:var(--danger)">Not Found:</span> No vehicle matches ${plate}.`;
+                    addLogEntry('SEARCH', `Plate ${plate} not found`);
+                }
+            }
+        }
+
+        async function viewAll() {
+            const res = await fetch(`/api/all`);
+            const data = await res.json();
+            const resultBox = document.getElementById('all-records');
+            
+            if(data.length === 0) {
+                resultBox.innerText = "Database is empty.";
+                return;
+            }
+            
+            let listHTML = data.map((v, i) => `${i + 1}. [${v.plateNumber}] - ${v.ownerName}`).join('\n');
+            resultBox.innerText = listHTML;
+        }
+
+        async function fetchStats(){
+            try{
+                const res = await fetch('/api/stats');
+                if(!res.ok) return;
+                const s = await res.json();
+                if(s.totalParked !== undefined) document.getElementById('stat-total').innerText = s.totalParked;
+                if(s.queueSize !== undefined) document.getElementById('stat-queue').innerText = s.queueSize;
+                if(s.availableSlots !== undefined) document.getElementById('stat-available').innerText = s.availableSlots;
+            }catch(e){console.error(e)}
+        }
+
+        async function exitVehicle(){
+            const plate = document.getElementById('exitPlate').value.trim();
+            if(!plate) return showToast('Please provide plate to exit', 'error');
+            const res = await fetch(`/api/exit?plate=${encodeURIComponent(plate)}`, { method: 'POST' });
+            const data = await res.json();
+            showToast(data.message);
+            if (data.message.includes('removed')) {
+                addLogEntry('EXIT', `${plate} exited and slot released`);
+                clearProcessResult();
+                clearRouteHighlight();
+            } else {
+                addLogEntry('EXIT', `${plate} exit failed - plate not found`);
+            }
+            document.getElementById('exitPlate').value='';
+            await fetchStats();
+        }
+
+        // --- Map Rendering & Live Updates ---
+        let mapData = null;
+        let svgNS = 'http://www.w3.org/2000/svg';
+
+        async function loadMap() {
+            try {
+                const res = await fetch('/api/map');
+                if(!res.ok) return;
+                mapData = await res.json();
+                renderMap(mapData);
+                await refreshSlots();
+            } catch (e) { console.error('loadMap', e); }
+        }
+
+        function renderMap(map) {
+            const container = document.getElementById('parking-map');
+            container.innerHTML = ''; // clear
+            const svg = document.createElementNS(svgNS, 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.setAttribute('viewBox', '0 0 1000 700');
+            svg.style.borderRadius = '8px';
+            svg.style.background = '#1e293b';
+            container.appendChild(svg);
+
+            const nodes = map.nodes || [];
+            const edges = map.edges || [];
+
+            // ===== STRUCTURED PARKING LOT LAYOUT =====
+            // Entrance at bottom center, central aisle, slots on sides
+            const pos = {};
+
+            // Define positions for main nodes (0-8) in a vertical aisle from bottom to top
+            const aisleX = 500;
+            const aisleStartY = 600;    // Bottom
+            const aisleEndY = 100;      // Top
+            const aisleNodeSpacing = (aisleStartY - aisleEndY) / 8;
+
+            // Position entrance (node 0) at very bottom
+            pos[0] = { x: aisleX, y: aisleStartY };
+
+            // Position nodes 1-8 along central aisle, evenly spaced from bottom to top
+            for (let i = 1; i <= 8; i++) {
+                pos[i] = { 
+                    x: aisleX, 
+                    y: aisleStartY - (i * aisleNodeSpacing)
+                };
+            }
+
+            // Position parking slots (101-105) on left and right sides in grid pattern
+            const slotIds = [101, 102, 103, 104, 105];
+            const slotsPerSide = Math.ceil(slotIds.length / 2);
+            const slotSpacingX = 250;  // Distance from centerline
+            const slotOffsetY = 200;
+
+            slotIds.forEach((slotId, index) => {
+                if (index < slotsPerSide) {
+                    // Left side
+                    pos[slotId] = { 
+                        x: aisleX - slotSpacingX, 
+                        y: aisleStartY - slotOffsetY - (index * 120)
+                    };
+                } else {
+                    // Right side
+                    pos[slotId] = { 
+                        x: aisleX + slotSpacingX, 
+                        y: aisleStartY - slotOffsetY - ((index - slotsPerSide) * 120)
+                    };
+                }
+            });
+
+            // ===== DRAW EDGES (roads/paths) =====
+            edges.forEach(e => {
+                const s = pos[e.source];
+                const t = pos[e.target];
+                if(!s || !t) return;
+
+                const line = document.createElementNS(svgNS, 'line');
+                line.setAttribute('x1', s.x);
+                line.setAttribute('y1', s.y);
+                line.setAttribute('x2', t.x);
+                line.setAttribute('y2', t.y);
+                line.setAttribute('stroke', '#475569');
+                line.setAttribute('stroke-width', '4');
+                line.setAttribute('stroke-linecap', 'round');
+                line.setAttribute('data-weight', e.weight);
+                line.setAttribute('data-source', e.source);
+                line.setAttribute('data-target', e.target);
+                svg.appendChild(line);
+            });
+
+            // ===== DRAW NODES =====
+            nodes.forEach(n => {
+                const p = pos[n.id];
+                if(!p) return;
+
+                const g = document.createElementNS(svgNS, 'g');
+                g.setAttribute('transform', `translate(${p.x}, ${p.y})`);
+                g.setAttribute('data-node-id', n.id);
+
+                // Determine node properties
+                let radius = 24;
+                let fillColor = '#64748b';
+
+                if (n.id === 0) {
+                    radius = 32;
+                    fillColor = '#3b82f6';  // Blue for entrance
+                } else if (n.id >= 100) {
+                    radius = 28;
+                    fillColor = '#14b8a6';  // Teal for slots
+                } else {
+                    radius = 22;
+                    fillColor = '#64748b';  // Gray for aisle nodes
+                }
+
+                // Draw circle
+                const circle = document.createElementNS(svgNS, 'circle');
+                circle.setAttribute('r', radius);
+                circle.setAttribute('fill', fillColor);
+                circle.setAttribute('stroke', '#0f172a');
+                circle.setAttribute('stroke-width', '3');
+                circle.setAttribute('id', `node-${n.id}`);
+                g.appendChild(circle);
+
+                // Place labels away from the main aisle so adjacent nodes do not overlap.
+                const labelGroup = document.createElementNS(svgNS, 'g');
+                const labelText = document.createElementNS(svgNS, 'text');
+                let labelX = 0;
+                let labelY = -(radius + 15);
+                let anchor = 'middle';
+
+                if (n.id === 0) {
+                    labelY = radius + 28;
+                } else if (n.id >= 100) {
+                    labelY = -(radius + 15);
+                } else {
+                    labelX = radius + 18;
+                    labelY = 5;
+                    anchor = 'start';
+                }
+
+                labelText.setAttribute('x', labelX);
+                labelText.setAttribute('y', labelY);
+                labelText.setAttribute('text-anchor', anchor);
+                labelText.setAttribute('dominant-baseline', 'middle');
+                labelText.setAttribute('font-size', '13px');
+                labelText.setAttribute('font-weight', 'bold');
+                labelText.setAttribute('fill', '#e2e8f0');
+                labelText.setAttribute('paint-order', 'stroke');
+                labelText.setAttribute('stroke', '#1e293b');
+                labelText.setAttribute('stroke-width', '3');
+                labelText.setAttribute('pointer-events', 'none');
+                labelText.textContent = n.label;
+                labelGroup.appendChild(labelText);
+                g.appendChild(labelGroup);
+
+                // Add title element for hover tooltip
+                const title = document.createElementNS(svgNS, 'title');
+                title.textContent = `${n.label} (ID: ${n.id})`;
+                g.appendChild(title);
+
+                svg.appendChild(g);
+            });
+        }
+
+        async function refreshSlots() {
+            try {
+                const res = await fetch('/api/slots');
+                if(!res.ok) return;
+                const slots = await res.json();
+                const svg = document.querySelector('#parking-map svg');
+                if(!svg) return;
+                slots.forEach(s => {
+                    const el = svg.querySelector(`#node-${s.slotId}`);
+                    if(el) {
+                        el.setAttribute('fill', s.isOccupied ? '#ef4444' : '#10b981');
+                    } else {
+                        // some slot nodes might be represented as labels in groups
+                        const g = svg.querySelector(`[data-node-id='${s.slotId}']`);
+                        if(g) {
+                            const c = g.querySelector('circle');
+                            if(c) c.setAttribute('fill', s.isOccupied ? '#ef4444' : '#10b981');
+                        }
+                    }
+                });
+            } catch (e) { console.error('refreshSlots', e); }
+        }
+
+        function highlightRoute(path) {
+            try {
+                const svg = document.querySelector('#parking-map svg');
+                if(!svg || !path || path.length === 0) return;
+
+                // Clear previous highlights
+                svg.querySelectorAll('line').forEach(l => { 
+                    l.setAttribute('stroke', '#475569');
+                    l.setAttribute('stroke-width', '4');
+                });
+                svg.querySelectorAll('circle').forEach(c => {
+                    const parent = c.parentElement;
+                    const nodeId = parent.getAttribute('data-node-id');
+                    if (!nodeId || !path.includes(Number(nodeId))) {
+                        c.setAttribute('filter', '');
+                    }
+                });
+
+                // Highlight path edges
+                for (let i = 0; i < path.length - 1; i++) {
+                    const fromNode = path[i];
+                    const toNode = path[i + 1];
+                    
+                    // Find and highlight the edge connecting these nodes
+                    const lines = Array.from(svg.querySelectorAll('line'));
+                    for (const line of lines) {
+                        const source = Number(line.getAttribute('data-source'));
+                        const target = Number(line.getAttribute('data-target'));
+                        
+                        // Match edge in either direction
+                        if ((source === fromNode && target === toNode) || 
+                            (source === toNode && target === fromNode)) {
+                            line.setAttribute('stroke', '#fbbf24');  // Bright yellow
+                            line.setAttribute('stroke-width', '8');
+                            line.setAttribute('stroke-linecap', 'round');
+                            break;
+                        }
+                    }
+                }
+
+                // Highlight destination slot with pulse effect
+                const targetSlotId = path[path.length - 1];
+                const targetGroup = svg.querySelector(`[data-node-id='${targetSlotId}']`);
+                if (targetGroup) {
+                    const circle = targetGroup.querySelector('circle');
+                    if (circle) {
+                        // Add glow effect with filter
+                        let defs = svg.querySelector('defs');
+                        if (!defs) {
+                            defs = document.createElementNS(svgNS, 'defs');
+                            svg.appendChild(defs);
+                        }
+                        
+                        // Remove old filter
+                        const oldFilter = defs.querySelector('#route-glow');
+                        if (oldFilter) oldFilter.remove();
+                        
+                        // Create glow filter
+                        const filter = document.createElementNS(svgNS, 'filter');
+                        filter.setAttribute('id', 'route-glow');
+                        filter.setAttribute('x', '-50%');
+                        filter.setAttribute('y', '-50%');
+                        filter.setAttribute('width', '200%');
+                        filter.setAttribute('height', '200%');
+                        
+                        const feGaussianBlur = document.createElementNS(svgNS, 'feGaussianBlur');
+                        feGaussianBlur.setAttribute('stdDeviation', '3');
+                        feGaussianBlur.setAttribute('result', 'coloredBlur');
+                        filter.appendChild(feGaussianBlur);
+                        
+                        const feMerge = document.createElementNS(svgNS, 'feMerge');
+                        const feMergeNode1 = document.createElementNS(svgNS, 'feMergeNode');
+                        feMergeNode1.setAttribute('in', 'coloredBlur');
+                        const feMergeNode2 = document.createElementNS(svgNS, 'feMergeNode');
+                        feMergeNode2.setAttribute('in', 'SourceGraphic');
+                        feMerge.appendChild(feMergeNode1);
+                        feMerge.appendChild(feMergeNode2);
+                        filter.appendChild(feMerge);
+                        
+                        defs.appendChild(filter);
+                        circle.setAttribute('filter', 'url(#route-glow)');
+                        circle.setAttribute('stroke', '#fbbf24');
+                        circle.setAttribute('stroke-width', '4');
+                    }
+                }
+            } catch(e) { 
+                console.error('highlightRoute', e); 
+            }
+        }
+
+        function clearProcessResult() {
+            const resultDiv = document.getElementById('processResult');
+            const slotSpan = document.getElementById('resultSlot');
+            const pathDiv = document.getElementById('resultPath');
+            if (resultDiv) resultDiv.style.display = 'none';
+            if (slotSpan) slotSpan.textContent = '—';
+            if (pathDiv) pathDiv.innerHTML = '';
+        }
+
+        function clearRouteHighlight() {
+            const svg = document.querySelector('#parking-map svg');
+            if (!svg) return;
+
+            svg.querySelectorAll('line').forEach(l => {
+                l.setAttribute('stroke', '#475569');
+                l.setAttribute('stroke-width', '4');
+            });
+
+            svg.querySelectorAll('circle').forEach(c => {
+                c.removeAttribute('filter');
+            });
+        }
+
+        // --- Hook map updates into existing actions ---
+        async function arrive() {
+            const plate = document.getElementById('plate').value;
+            const name = document.getElementById('name').value;
+            if(!plate || !name) return showToast("Please fill both fields.", "error");
+            const res = await fetch(`/api/arrive?plate=${plate}&name=${name}`, { method: 'POST' });
+            const data = await res.json();
+            document.getElementById('stat-queue').innerText = data.queueSize;
+            totalCount++;
+            document.getElementById('stat-total').innerText = totalCount;
+            showToast(`${plate} added to queue.`, "success");
+            addLogEntry('ARRIVAL', `${plate} (${name}) added to queue`);
+            
+            document.getElementById('plate').value = '';
+            document.getElementById('name').value = '';
+            await fetchStats();
+            await refreshSlots();
+        }
+
+        async function process() {
+            const res = await fetch(`/api/process`, { method: 'POST' });
+            const data = await res.json();
+            
+            showToast(data.message);
+            
+            // Display result in Gate Operations panel
+            const resultDiv = document.getElementById('processResult');
+            const slotSpan = document.getElementById('resultSlot');
+            const pathDiv = document.getElementById('resultPath');
+            
+            if (data.assignedSlot) {
+                slotSpan.textContent = `Slot ${data.assignedSlot.slotId}`;
+                resultDiv.style.display = 'block';
+            }
+            
+            if (data.routePath && data.routePath.length > 0) {
+                // Format path as readable sequence: Entrance → Node 3 → Node 7 → Slot 101
+                const pathLabels = data.routePath.map((nodeId, idx) => {
+                    if (nodeId === 0) return 'Entrance';
+                    if (nodeId >= 100) return `Slot ${nodeId}`;
+                    return `Node ${nodeId}`;
+                });
+                pathDiv.innerHTML = pathLabels.join(' → ');
+                pathDiv.innerHTML += `<div style="margin-top:8px;color:var(--text-muted);font-size:11px">Distance: ${data.routeDistance} units</div>`;
+                resultDiv.style.display = 'block';
+                highlightRoute(data.routePath);
+            }
+            
+            await fetchStats();
+            await refreshSlots();
+            
+            if (data.assignedSlot) {
+                addLogEntry('PROCESS', `Processed vehicle - Slot ${data.assignedSlot.slotId}, Distance: ${data.routeDistance} units`);
+            } else if (data.message.includes('full')) {
+                addLogEntry('PROCESS', 'Processing failed - Parking is full');
+            } else if (data.message.includes('empty')) {
+                addLogEntry('PROCESS', 'Processing failed - Queue is empty');
+            }
+        }
+
+        async function undo() {
+            const res = await fetch(`/api/undo`, { method: 'POST' });
+            const data = await res.json();
+            showToast(data.message, "error");
+            if (data.message.includes('Reversed')) {
+                addLogEntry('UNDO', data.message);
+                clearProcessResult();
+                clearRouteHighlight();
+            }
+            await fetchStats();
+            await refreshSlots();
+        }
+
+        async function exitVehicle(){
+            const plate = document.getElementById('exitPlate').value.trim();
+            if(!plate) return showToast('Please provide plate to exit', 'error');
+            const res = await fetch(`/api/exit?plate=${encodeURIComponent(plate)}`, { method: 'POST' });
+            const data = await res.json();
+            showToast(data.message);
+            if (data.message.includes('removed')) {
+                clearProcessResult();
+                clearRouteHighlight();
+            }
+            document.getElementById('exitPlate').value='';
+            await fetchStats();
+            await refreshSlots();
+        }
+
+        // initial load and polling
+        (async function init(){
+            await loadMap();
+            // refresh stats every 2s
+            await fetchStats();
+            setInterval(fetchStats, 2000);
+            // refresh slots every 2.5s
+            setInterval(refreshSlots, 2500);
+        })();
+    </script>
 </body>
 </html>
