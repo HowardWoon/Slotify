@@ -35,3 +35,26 @@ This system solves real-world traffic management problems using the following da
    ```bash
    git clone [https://github.com/HowardWoon/Slotify.git](https://github.com/HowardWoon/Slotify.git)
    cd Slotify
+
+2. **Build and run the Spring Boot application:**
+
+Bash
+mvn spring-boot:run
+
+3. **Access the Dashboard:**
+Open your web browser and navigate to:
+http://localhost:8080
+
+**👥 Contributors**
+Howard Woon (@HowardWoon) - Lead Developer / Project Manager
+
+Tan Ker Li
+
+Eugene
+
+Chew Chen Xi
+
+Yap Vincent
+
+📄 License
+This project is for academic and portfolio purposes.
