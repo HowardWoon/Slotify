@@ -1,94 +1,217 @@
-# Slotify
+<div align="center">
 
-Slotify is a Spring Boot parking management demo built around multiple data structures working together in one flow:
+# 🅿️ Slotify
 
-- `VehicleLinkedList` stores vehicles in arrival order and supports reverse traversal.
-- `GateManager` manages the entrance queue and undo stack.
-- `SlotAssigner` uses a manual min-heap to assign the nearest available slot.
-- `RouteGraph` computes the shortest route with Dijkstra and exports the graph for visualization.
-- `SystemDatabase` combines a hash map for fast lookup with an AVL-balanced BST for ordered search.
+**A Spring Boot parking management system built to demonstrate multiple data structures working together in one cohesive flow.**
 
-## What It Does
+[![Java](https://img.shields.io/badge/Java-17+-ED8B00?style=flat-square&logo=openjdk&logoColor=white)](https://openjdk.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=flat-square&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Maven](https://img.shields.io/badge/Maven_Wrapper-included-C71A36?style=flat-square&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
-On startup, the app loads demo parking slots and routes, then runs a boot demo from `CommandLineRunner` so you can see the data-structure flow immediately. A vehicle arrival touches the queue, linked list, hash map, and AVL tree. Processing then assigns a slot, calculates a route, and records undo data. Undo reverses the processed entry across the system.
+</div>
 
-## Strategic Upgrade Report
+---
 
-### Summary Of Implemented Upgrades
+## Overview
 
-- Dijkstra: `RouteGraph.findShortestPath` returns the full path, and `exportAsDot()` provides visualization output.
-- Graph: the lot is expanded to nodes `0..8` with slots `101..105` connected to multiple nodes for richer pathfinding.
-- Manual Min-Heap: `ManualMinHeap` implements `insert`, `extractMin`, `heapifyUp`, and `heapifyDown`.
-- AVL BST: `SystemDatabase` keeps vehicle records in an AVL-balanced BST with `getAllSorted()`.
-- Doubly-linked list: `VehicleLinkedList` supports reverse traversal and plate-based removal.
-- Undo: `UndoAction` stores the vehicle, assigned slot, and timestamp, and `ParkingService.undo()` reverses the assignment and releases the slot.
+Slotify is a parking management demo where every action — vehicle arrival, slot assignment, route calculation, search, and undo — flows through a hand-implemented data structure stack. There is no `java.util.PriorityQueue` or `TreeMap` doing the heavy lifting invisibly; each structure is built from scratch and exercised end-to-end.
 
-### Complexity Summary
+On startup, a `CommandLineRunner` boot demo fires automatically, so you can observe the full data-structure pipeline in your terminal without making a single API call.
 
-- Queue arrival: enqueue `O(1)`, dequeue `O(1)`.
-- Stack undo: push/pop `O(1)`.
-- Min-heap slot assignment: insert `O(log n)`, extract-min `O(log n)`.
-- AVL BST records: insert/search/delete `O(log n)`.
-- HashMap fast cache: average lookup `O(1)`.
-- Doubly linked list: add `O(1)`, remove by plate `O(n)` because the node must be searched.
+---
 
-### Demo Notes
+## Architecture: Data Structures at a Glance
 
-Run the Spring Boot application and watch the `CommandLineRunner` output. It demonstrates arrivals, processing, undo, sorted listing, and prints a Graphviz DOT string for the route graph. You can paste the DOT output into a Graphviz renderer or use `dot -Tpng` locally.
+| Component | Structure | Role |
+|---|---|---|
+| `VehicleLinkedList` | Doubly linked list | Stores vehicles in arrival order; supports reverse traversal and plate-based removal |
+| `GateManager` | Queue + undo stack | Manages the entrance queue; stack records actions for reversal |
+| `SlotAssigner` | Manual min-heap | Assigns the nearest available slot — `O(log n)` insert and extract |
+| `RouteGraph` | Weighted graph + Dijkstra | Computes the shortest path through the lot; exports a Graphviz DOT string |
+| `SystemDatabase` | HashMap + AVL BST | HashMap for `O(1)` plate lookups; AVL tree for stable ordered search and traversal |
 
-### Report Takeaways
+A single vehicle arrival touches **all five structures** in sequence: queue → linked list → hash map → AVL tree → heap assignment → route → undo stack.
 
-- The parking lot is modeled as a weighted graph with bidirectional routes.
-- The AVL tree avoids worst-case BST degeneration and keeps search stable.
-- The hash map gives fast plate-number retrieval while the BST preserves ordered traversal.
-- The min-heap keeps slot selection nearest-first instead of naive linear scanning.
-- The undo stack preserves full action payload so a processed entry can be rolled back cleanly.
+---
 
-## API Endpoints
+## How It Works
 
-- `POST /api/arrive?plate=ABC-123&name=Alice`
-- `POST /api/process`
-- `POST /api/undo`
-- `GET /api/search?plate=ABC-123`
-- `GET /api/all`
-- `GET /api/map`
-- `GET /api/mapdot`
-- `GET /api/stats`
-- `GET /api/slots`
-- `POST /api/exit?plate=ABC-123`
+### Vehicle arrival
+1. The plate is enqueued in `GateManager`.
+2. The vehicle is appended to `VehicleLinkedList` (arrival order preserved).
+3. The record is inserted into `SystemDatabase` — stored in both the HashMap and AVL BST simultaneously.
 
-## Installation And Run
+### Processing
+4. The front of the queue is dequeued.
+5. `SlotAssigner` extracts the minimum slot from the min-heap (nearest available).
+6. `RouteGraph` runs Dijkstra from the gate node to the assigned slot node and returns the full path.
+7. An `UndoAction` (vehicle + slot + timestamp) is pushed onto the undo stack.
 
-You need Java 17 or newer. Maven Wrapper is included, so you do not need a system-wide Maven install.
+### Undo
+8. The top `UndoAction` is popped.
+9. The vehicle is removed from the linked list by plate, deleted from the AVL tree and hash map, and the slot is returned to the min-heap.
 
-### Windows
+### Search and listing
+- Plate-based lookup hits the HashMap directly — `O(1)` average.
+- `getAllSorted()` performs an in-order traversal of the AVL BST — keys returned in alphabetical order with no extra sorting step.
 
+---
+
+## Complexity Summary
+
+| Operation | Structure | Complexity |
+|---|---|---|
+| Enqueue / dequeue | Queue | `O(1)` |
+| Undo push / pop | Stack | `O(1)` |
+| Slot insert | Min-heap | `O(log n)` |
+| Slot extract-min | Min-heap | `O(log n)` |
+| Record insert / search / delete | AVL BST | `O(log n)` |
+| Plate lookup | HashMap | `O(1)` avg |
+| Remove by plate | Doubly linked list | `O(n)` — node must be located first |
+| Shortest path | Dijkstra (adjacency list) | `O((V + E) log V)` |
+
+---
+
+## Graph Layout
+
+The lot is modelled as a weighted, bidirectional graph with nodes `0..8`. Slots `101..105` are each connected to multiple graph nodes, giving Dijkstra genuine routing choices rather than a trivial single-path graph.
+
+```
+Gate (node 0) ──── 1 ──── 2
+    │                     │
+    3 ──── 4 ──── 5 ──── 6
+    │             │
+    7 ──────────── 8
+    │
+ Slots 101–105 (connected to multiple nodes)
+```
+
+Paste the output of `GET /api/mapdot` into [Graphviz Online](https://dreampuf.github.io/GraphvizOnline/) or run locally:
+
+```bash
+dot -Tpng slotify.dot -o slotify.png
+```
+
+---
+
+## API Reference
+
+### Parking flow
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/arrive?plate=ABC-123&name=Alice` | Register a vehicle arrival and add it to the queue |
+| `POST` | `/api/process` | Dequeue the next vehicle, assign a slot, and calculate its route |
+| `POST` | `/api/undo` | Reverse the last processed entry across all structures |
+| `POST` | `/api/exit?plate=ABC-123` | Mark a vehicle as departed and release its slot back to the heap |
+
+### Query
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/search?plate=ABC-123` | Plate lookup via HashMap — `O(1)` average |
+| `GET` | `/api/all` | All vehicles sorted by plate (AVL BST in-order traversal) |
+| `GET` | `/api/slots` | Current available slot list from the min-heap |
+| `GET` | `/api/stats` | System statistics: queue size, heap size, total records |
+
+### Visualisation
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/map` | Route graph as a human-readable adjacency list |
+| `GET` | `/api/mapdot` | Route graph as a Graphviz DOT string for rendering |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- **Java 17 or newer** — check with `java -version`
+- No system-wide Maven required — the Maven Wrapper (`mvnw` / `mvnw.cmd`) is included
+
+### Run
+
+**Windows**
 ```bash
 mvnw.cmd spring-boot:run
 ```
 
-### macOS / Linux
-
+**macOS / Linux**
 ```bash
 ./mvnw spring-boot:run
 ```
 
-If you prefer packaging first:
-
+**Package and run the JAR directly**
 ```bash
+# Windows
 mvnw.cmd clean package
+java -jar target/slotify-1.0.0.jar
+
+# macOS / Linux
+./mvnw clean package
 java -jar target/slotify-1.0.0.jar
 ```
 
-### Access The App
+### Access
 
-Open your browser at:
+Once the app starts, open:
 
-```text
+```
 http://localhost:8081
 ```
 
+The boot demo output appears in your terminal immediately — arrivals, processing, undo, sorted listing, and the DOT graph string are all printed before you make any API call.
+
+---
+
+## Boot Demo Output
+
+The `CommandLineRunner` executes this sequence automatically on every startup:
+
+```
+[ARRIVE]   ABC-123 (Alice)  → queued, added to linked list + AVL + HashMap
+[ARRIVE]   XYZ-999 (Bob)    → queued, added to linked list + AVL + HashMap
+[PROCESS]  ABC-123          → slot 101 assigned | route: 0 → 3 → 7 → 101
+[PROCESS]  XYZ-999          → slot 102 assigned | route: 0 → 1 → 4 → 102
+[UNDO]     XYZ-999          → slot 102 released, record removed, queue restored
+[SORTED]   All vehicles (AVL in-order): ABC-123, XYZ-999
+[DOT]      digraph slotify { ... }
+```
+
+---
+
+## Project Structure
+
+```
+slotify/
+├── src/main/java/com/slotify/
+│   ├── datastructures/
+│   │   ├── VehicleLinkedList.java   ← doubly linked list
+│   │   ├── ManualMinHeap.java       ← min-heap (insert, extractMin, heapifyUp/Down)
+│   │   └── AVLTree.java             ← self-balancing BST
+│   ├── service/
+│   │   ├── GateManager.java         ← queue + undo stack
+│   │   ├── SlotAssigner.java        ← wraps ManualMinHeap
+│   │   ├── RouteGraph.java          ← Dijkstra + DOT export
+│   │   ├── SystemDatabase.java      ← HashMap + AVL tree combined
+│   │   └── ParkingService.java      ← orchestrates the full flow
+│   ├── model/
+│   │   ├── Vehicle.java
+│   │   └── UndoAction.java          ← vehicle + slot + timestamp
+│   ├── controller/
+│   │   └── ParkingController.java   ← REST endpoints
+│   └── SlotifyApplication.java      ← CommandLineRunner boot demo
+└── src/main/resources/
+    └── application.properties       ← server.port=8081
+```
+
+---
+
 ## Notes
 
-- Run the project through Maven Wrapper, not by using the editor's single-file Java runner.
+- **Run via Maven Wrapper**, not your editor's single-file Java runner — the runner bypasses Spring Boot's application context.
 - If port `8081` is already in use, stop the previous Slotify instance or change `server.port` in `src/main/resources/application.properties`.
+- The AVL tree rebalances on every insert and delete, so `getAllSorted()` always returns stable ordered output regardless of insertion sequence.
+- The min-heap is implemented entirely in `ManualMinHeap.java` with no reliance on `java.util.PriorityQueue` — `heapifyUp` fires on insert, `heapifyDown` fires on `extractMin`.
