@@ -20,9 +20,17 @@ API endpoints:
 - `GET /api/search?plate=ABC-123`
 - `GET /api/all`
 
-## Run locally
+## Installation & Run
 
-You need Java 17. Maven Wrapper is included, so you do not need a machine-wide Maven install.
+You need Java 17 or newer. Maven Wrapper is included, so you do not need a system-wide Maven install.
+
+### Windows
+
+```bash
+mvnw.cmd spring-boot:run
+```
+
+### macOS / Linux
 
 ```bash
 ./mvnw spring-boot:run
@@ -31,10 +39,19 @@ You need Java 17. Maven Wrapper is included, so you do not need a machine-wide M
 If you prefer packaging first:
 
 ```bash
-./mvnw clean package
+mvnw.cmd clean package
 java -jar target/slotify-1.0.0.jar
+```
+
+### Access the app
+
+Open your browser at:
+
+```text
+http://localhost:8080
 ```
 
 ## Notes
 
-On Windows, use `mvnw.cmd` instead of `./mvnw`.
+- Run the project through Maven Wrapper, not by using the editor's single-file Java runner.
+- If port `8080` is already in use, stop the previous Slotify instance or change `server.port` in `src/main/resources/application.properties`.
