@@ -53,6 +53,9 @@ public class ParkingService {
         map.addRoute(6, 103, 7);
         map.addRoute(8, 104, 5);
         map.addRoute(1, 105, 12);
+
+        // Set the route graph in slot assigner for distance calculation
+        slotSystem.setRouteGraph(map);
     }
 
     public Map<String, Object> arriveAtGate(String plate, String name) {
@@ -102,9 +105,10 @@ public class ParkingService {
                 slotSystem.releaseSlot(action.assignedSlot);
                 db.removeAssignment(action.vehicle.plateNumber);
             }
-            allVehicles.removeByPlate(action.vehicle.plateNumber);
-            db.removeRecord(action.vehicle.plateNumber);
+            // Add the vehicle back to the head of the queue
+            gate.returnToFront(action.vehicle);
             response.put("message", "Reversed last action for: " + action.vehicle.plateNumber);
+            response.put("queueSize", gate.getQueueSize());
         } else {
             response.put("message", "Nothing to undo.");
         }

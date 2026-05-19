@@ -37,6 +37,16 @@ public class ManualMinHeap {
         return heap.size();
     }
 
+    public List<ParkingSlot> getAllSlots() {
+        return new ArrayList<>(heap);
+    }
+
+    public void rebuildHeap() {
+        for (int i = heap.size() / 2 - 1; i >= 0; i--) {
+            heapifyDown(i);
+        }
+    }
+
     private void heapifyUp(int index) {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;

@@ -4,6 +4,11 @@ import com.slotify.model.ParkingSlot;
 public class SlotAssigner {
     private final ManualMinHeap availableSlots = new ManualMinHeap();
     private final java.util.List<com.slotify.model.ParkingSlot> allSlots = new java.util.ArrayList<>();
+    private RouteGraph routeGraph;
+
+    public void setRouteGraph(RouteGraph graph) {
+        this.routeGraph = graph;
+    }
 
     public void addSlot(ParkingSlot slot) {
         availableSlots.insert(slot);
@@ -12,8 +17,26 @@ public class SlotAssigner {
 
     public ParkingSlot assignBestSlot() {
         if (availableSlots.isEmpty()) return null;
+        
+        // Update distances from node 0 to each available slot if RouteGraph is available
+        if (routeGraph != null) {
+            java.util.List<ParkingSlot> tempSlots = availableSlots.getAllSlots();
+            for (ParkingSlot slot : tempSlots) {
+                if (!slot.isOccupied) {
+                    java.util.Map<String, Object> pathInfo = routeGraph.findShortestPathJson(0, slot.slotId);
+                    int distance = (Integer) pathInfo.get("distance");
+                    if (distance != -1) {
+                        slot.distance = distance;
+                    }
+                }
+            }
+            availableSlots.rebuildHeap();
+        }
+        
         ParkingSlot bestSlot = availableSlots.extractMin();
-        bestSlot.isOccupied = true;
+        if (bestSlot != null) {
+            bestSlot.isOccupied = true;
+        }
         return bestSlot;
     }
 
