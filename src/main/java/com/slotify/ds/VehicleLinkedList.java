@@ -15,7 +15,7 @@ public class VehicleLinkedList {
     private Node head;
     private Node tail;
 
-    public void addVehicle(Vehicle v) {
+    public void addVehicle(Vehicle v) {//addLast
         Node newNode = new Node(v);
         if (head == null) {
             head = newNode;
@@ -28,23 +28,29 @@ public class VehicleLinkedList {
     }
 
     public boolean removeByPlate(String plate) {
-        Node current = head;
-        while (current != null) {
-            if (current.vehicle != null && current.vehicle.plateNumber.equals(plate)) {
-                if (current.prev != null) {
-                    current.prev.next = current.next;
-                } else {
-                    head = current.next;
-                }
+        Node current=head;
+        while(current!=null){
+            if(current.vehicle!=null && current.vehicle.plateNumber.equals(plate)){
+                if(current.prev==null){
+                    head=current.next;
+                    if(head!=null){
+                        head.prev=null;
+                    }else{
+                        tail=null;
+                    }
 
-                if (current.next != null) {
-                    current.next.prev = current.prev;
-                } else {
-                    tail = current.prev;
+                }else if(current.next==null){
+                    tail=current.prev;
+                    tail.next=null;
+                }else{
+                    current.prev.next=current.next;
+                    current.next.prev=current.prev;;
                 }
+                current.prev=null;
+                current.next=null;
                 return true;
             }
-            current = current.next;
+            current=current.next;
         }
         return false;
     }
