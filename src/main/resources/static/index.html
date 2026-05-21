@@ -110,10 +110,6 @@
     <main class="main-content">
         <div class="header-stats">
             <div class="stat-card">
-                <h4>Total Recorded</h4>
-                <h2 id="stat-total">0</h2>
-            </div>
-            <div class="stat-card">
                 <h4>Queue Length</h4>
                 <h2 id="stat-queue">0</h2>
             </div>
@@ -208,7 +204,6 @@
     </div>
 
     <script>
-        let totalCount = 0;
         let systemLog = [];
 
         // --- System Log Functions ---
@@ -296,9 +291,6 @@
             const data = await res.json();
             
             document.getElementById('stat-queue').innerText = data.queueSize;
-            totalCount++;
-            document.getElementById('stat-total').innerText = totalCount;
-            
             showToast(`${plate} added to queue.`, "success");
             document.getElementById('plate').value = '';
             document.getElementById('name').value = '';
@@ -359,7 +351,6 @@
                 const res = await fetch('/api/stats');
                 if(!res.ok) return;
                 const s = await res.json();
-                if(s.totalRecorded !== undefined) document.getElementById('stat-total').innerText = s.totalRecorded;
                 if(s.queueSize !== undefined) document.getElementById('stat-queue').innerText = s.queueSize;
                 if(s.availableSlots !== undefined) document.getElementById('stat-available').innerText = s.availableSlots;
             }catch(e){console.error(e)}
@@ -691,8 +682,6 @@
             const res = await fetch(`/api/arrive?plate=${plate}&name=${name}`, { method: 'POST' });
             const data = await res.json();
             document.getElementById('stat-queue').innerText = data.queueSize;
-            totalCount++;
-            document.getElementById('stat-total').innerText = totalCount;
             showToast(`${plate} added to queue.`, "success");
             addLogEntry('ARRIVAL', `${plate} (${name}) added to queue`);
             
