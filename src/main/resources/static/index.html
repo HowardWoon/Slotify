@@ -37,6 +37,8 @@
         .stat-card { flex: 1; padding: 15px; border-radius: 8px; background: var(--bg-color); border: 1px solid var(--border); }
         .stat-card h4 { color: var(--text-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-card h2 { font-size: 28px; margin-top: 5px; color: var(--primary); }
+        .queue-container { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; }
+        .queue-box { border: 1px solid var(--border); background: var(--bg-color); padding: 10px 14px; border-radius: 6px; text-align: center; font-weight: 600; color: var(--primary); min-width: 90px; }
 
         /* Tab Views */
         .tab-content { padding: 30px; display: none; animation: fadeIn 0.3s ease-in-out; }
@@ -145,6 +147,8 @@
                 </div>
                 <button class="primary" onclick="arrive()" style="width: 100%;">Add to Queue</button>
             </div>
+            <h5>Live Queue Visualization</h5>
+            <div id="queue-visual-container" class="queue-container"></div>
 
             <div class="card" style="max-width: 500px;">
                 <div class="card-header">Gate Operations</div>
@@ -353,6 +357,16 @@
                 const s = await res.json();
                 if(s.queueSize !== undefined) document.getElementById('stat-queue').innerText = s.queueSize;
                 if(s.availableSlots !== undefined) document.getElementById('stat-available').innerText = s.availableSlots;
+                const queueContainer = document.getElementById('queue-visual-container');
+                queueContainer.innerHTML = '';
+                if(Array.isArray(s.queueDetails)) {
+                    s.queueDetails.forEach(vehicle => {
+                        const box = document.createElement('div');
+                        box.className = 'queue-box';
+                        box.innerText = vehicle.plateNumber;
+                        queueContainer.appendChild(box);
+                    });
+                }
             }catch(e){console.error(e)}
         }
 
