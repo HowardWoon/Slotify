@@ -44,7 +44,7 @@ public class VehicleLinkedList {
                     tail.next=null;
                 }else{
                     current.prev.next=current.next;
-                    current.next.prev=current.prev;;
+                    current.next.prev=current.prev;
                 }
                 current.prev=null;
                 current.next=null;
