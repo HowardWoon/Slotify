@@ -327,10 +327,16 @@
                 const text = await res.text();
                 if(text) {
                     const data = JSON.parse(text);
-                    resultBox.innerHTML = `<span style="color:var(--success)">Found:</span> Plate <b>${data.plateNumber}</b> belongs to ${data.ownerName}`;
-                    addLogEntry('SEARCH', `Found plate ${plate} (${data.ownerName})`);
+                    if(data.found) {
+                        const slotText = data.slotId !== undefined ? ` (Slot ${data.slotId})` : '';
+                        resultBox.innerHTML = `<span style="color:var(--success)">Found:</span> Plate <b>${data.vehicle.plateNumber}</b> | Owner: ${data.vehicle.ownerName} | Status: ${data.status}${slotText}`;
+                        addLogEntry('SEARCH', `Found plate ${plate} (${data.vehicle.ownerName}) - ${data.status}${slotText}`);
+                    } else {
+                        resultBox.innerHTML = `<span style="color:var(--danger)">Vehicle not found</span>`;
+                        addLogEntry('SEARCH', `Plate ${plate} not found`);
+                    }
                 } else {
-                    resultBox.innerHTML = `<span style="color:var(--danger)">Not Found:</span> No vehicle matches ${plate}.`;
+                    resultBox.innerHTML = `<span style="color:var(--danger)">Vehicle not found</span>`;
                     addLogEntry('SEARCH', `Plate ${plate} not found`);
                 }
             }

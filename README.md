@@ -110,10 +110,10 @@ dot -Tpng slotify.dot -o slotify.png
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/search?plate=ABC-123` | Plate lookup via HashMap — `O(1)` average |
+| `GET` | `/api/search?plate=ABC-123` | Plate lookup via HashMap (`O(1)` avg). Returns vehicle info along with real-time status (In Queue or Parked with Slot ID). |
 | `GET` | `/api/all` | All vehicles sorted by plate (AVL BST in-order traversal) |
 | `GET` | `/api/slots` | Current available slot list from the min-heap |
-| `GET` | `/api/stats` | System statistics: queue size, heap size, total records |
+| `GET` | `/api/stats` | System statistics and live `queueDetails` array used for dynamic FIFO queue UI visualization. |
 
 ### Visualisation
 
@@ -187,7 +187,7 @@ The `CommandLineRunner` executes this sequence automatically on every startup:
 ```
 slotify/
 ├── src/main/java/com/slotify/
-│   ├── datastructures/
+│   ├── ds/
 │   │   ├── VehicleLinkedList.java   ← doubly linked list
 │   │   ├── ManualMinHeap.java       ← min-heap (insert, extractMin, heapifyUp/Down)
 │   │   └── AVLTree.java             ← self-balancing BST
@@ -201,7 +201,7 @@ slotify/
 │   │   ├── Vehicle.java
 │   │   └── UndoAction.java          ← vehicle + slot + timestamp
 │   ├── controller/
-│   │   └── ParkingController.java   ← REST endpoints
+│   │   └── ApiController.java       ← REST endpoints
 │   └── SlotifyApplication.java      ← CommandLineRunner boot demo
 └── src/main/resources/
     └── application.properties       ← server.port=8081
