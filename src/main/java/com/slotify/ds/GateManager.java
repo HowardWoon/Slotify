@@ -1,5 +1,7 @@
 package com.slotify.ds;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -42,5 +44,9 @@ public class GateManager {
     
     public int getQueueSize() {
         return entranceQueue.size();
+    }
+
+    public List<Vehicle> getQueueDetails() {
+        return new ArrayList<>(entranceQueue);
     }
 }

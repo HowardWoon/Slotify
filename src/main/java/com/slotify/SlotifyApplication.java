@@ -42,10 +42,12 @@ public class SlotifyApplication {
             System.out.println("All vehicles (reverse insertion): " + parkingService.getAll().stream()
                 .map(v -> v.plateNumber).toList());
 
-            Vehicle found = parkingService.search("ABC-123");
-            System.out.println(found == null
-                ? "Search result: not found"
-                : "Search result: " + found.plateNumber + " owned by " + found.ownerName);
+            Map<String, Object> searchResult = parkingService.searchVehicleStatus("ABC-123");
+            Vehicle found = (Vehicle) searchResult.get("vehicle");
+            System.out.println(Boolean.TRUE.equals(searchResult.get("found"))
+                && found != null
+                ? "Search result: " + found.plateNumber + " owned by " + found.ownerName
+                : "Search result: not found");
 
             // Demonstrate undo
             Map<String, Object> undoResp = parkingService.undo();

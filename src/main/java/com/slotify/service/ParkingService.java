@@ -115,8 +115,24 @@ public class ParkingService {
         return response;
     }
 
-    public Vehicle search(String plate) {
-        return db.searchBST(plate);
+    public Map<String, Object> searchVehicleStatus(String plate) {
+        Map<String, Object> response = new HashMap<>();
+        Vehicle v = db.searchBST(plate);
+        if (v == null) {
+            response.put("found", false);
+            return response;
+        }
+
+        ParkingSlot slot = db.getAssignedSlot(plate);
+        response.put("found", true);
+        response.put("vehicle", v);
+        if (slot != null) {
+            response.put("status", "Parked");
+            response.put("slotId", slot.slotId);
+        } else {
+            response.put("status", "In Queue");
+        }
+        return response;
     }
 
     public List<Vehicle> getAll() {
@@ -148,6 +164,8 @@ public class ParkingService {
         m.put("totalParked", totalParked);
         m.put("availableSlots", slotSystem.getAvailableSlotCount());
         m.put("queueSize", gate.getQueueSize());
+        m.put("totalRecorded", allVehicles.getAllVehicles().size());
+        m.put("queueDetails", gate.getQueueDetails());
         return m;
     }
 

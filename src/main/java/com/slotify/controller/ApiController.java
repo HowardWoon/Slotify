@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.slotify.model.Vehicle;
 import com.slotify.service.ParkingService;
 
 @RestController
@@ -36,8 +35,8 @@ public class ApiController {
     }
 
     @GetMapping("/search")
-    public Vehicle search(@RequestParam("plate") String plate) {
-        return parkingService.search(plate);
+    public Map<String, Object> search(@RequestParam("plate") String plate) {
+        return parkingService.searchVehicleStatus(plate);
     }
 
     @GetMapping("/all")
