@@ -156,9 +156,25 @@ public class RouteGraph {
 
     // Export the adjacency list as a Graphviz DOT string for visualization.
     public String exportAsDot() {
+        return exportAsDot(java.util.Collections.emptyMap());
+    }
+
+    public String exportAsDot(Map<Integer, String> occupiedSlotPlates) {
         StringBuilder sb = new StringBuilder();
         sb.append("graph RouteGraph {\n");
         sb.append("  node [shape=circle];\n");
+
+        for (Integer nodeId : adjList.keySet()) {
+            String nodeName = labelForDot(nodeId);
+            if (nodeId >= 100) {
+                String plate = occupiedSlotPlates.get(nodeId);
+                String label = plate == null ? "Slot " + nodeId : "Slot " + nodeId + "\\n[" + plate + "]";
+                String fillColor = plate == null ? "green" : "red";
+                sb.append("  ").append(nodeName).append(" [label=\"").append(label)
+                  .append("\", shape=\"box\", style=\"filled,rounded\", fillcolor=\"")
+                  .append(fillColor).append("\"];\n");
+            }
+        }
 
         for (Map.Entry<Integer, List<Edge>> entry : adjList.entrySet()) {
             int src = entry.getKey();

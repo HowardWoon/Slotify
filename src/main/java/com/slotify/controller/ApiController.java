@@ -45,6 +45,11 @@ public class ApiController {
         return parkingService.getAllReverse();
     }
 
+    @GetMapping("/sorted")
+    public List<Vehicle> getSorted() {
+        return parkingService.getAllSorted();
+    }
+
     @GetMapping("/map")
     public java.util.Map<String, Object> getMap() {
         return parkingService.getMapJson();

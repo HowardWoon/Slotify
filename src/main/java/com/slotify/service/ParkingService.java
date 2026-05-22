@@ -144,7 +144,7 @@ public class ParkingService {
     }
 
     public String exportMapDot() {
-        return map.exportAsDot();
+        return map.exportAsDot(db.getOccupiedSlotPlates());
     }
 
     public java.util.List<com.slotify.model.Vehicle> getAllSorted() {

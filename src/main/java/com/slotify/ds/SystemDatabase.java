@@ -39,6 +39,14 @@ public class SystemDatabase {
         slotAssignments.remove(plate);
     }
 
+    public Map<Integer, String> getOccupiedSlotPlates() {
+        Map<Integer, String> occupiedSlotPlates = new HashMap<>();
+        for (Map.Entry<String, ParkingSlot> entry : slotAssignments.entrySet()) {
+            occupiedSlotPlates.put(entry.getValue().slotId, entry.getKey());
+        }
+        return occupiedSlotPlates;
+    }
+
     public boolean removeRecord(String plate) {
         Vehicle removed = fastCache.remove(plate);
         if (removed == null) {

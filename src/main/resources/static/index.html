@@ -43,6 +43,8 @@
         /* Tab Views */
         .tab-content { padding: 30px; display: none; animation: fadeIn 0.3s ease-in-out; }
         .tab-content.active { display: block; }
+        #view-gate.active { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; }
+        @media (max-width: 900px) { #view-gate.active { grid-template-columns: 1fr; } }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -59,6 +61,8 @@
         button { padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; color: white; font-size: 14px; }
         button.primary { background: var(--primary); }
         button.primary:hover { background: var(--primary-hover); }
+        button.secondary { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        button.secondary:hover { background: rgba(37,99,235,0.1); }
         button.success { background: var(--success); }
         button.success:hover { background: #059669; }
         button.danger { background: var(--danger); }
@@ -104,8 +108,7 @@
 
     <aside class="sidebar">
         <div class="logo">🚙 Slotify</div>
-        <div class="nav-item active" onclick="switchTab('map')">🗺️ Live Map</div>
-        <div class="nav-item" onclick="switchTab('gate')">🚧 Gate Control</div>
+        <div class="nav-item active" onclick="switchTab('gate')">🚧 Gate Control</div>
         <div class="nav-item" onclick="switchTab('database')">🗃️ Database</div>
     </aside>
 
@@ -125,52 +128,53 @@
             </div>
         </div>
 
-        <div id="view-map" class="tab-content active">
-            <div class="card">
-                <div class="card-header">Live Parking Lot Topology</div>
-                <div class="map-container" id="parking-map">
-                    [ Parking Graph / Canvas Goes Here ]
+        <div id="view-gate" class="tab-content active">
+            <div>
+                <div class="card" style="max-width: 500px;">
+                    <div class="card-header">Vehicle Entry (Queue)</div>
+                    <div class="form-group">
+                        <label>License Plate Number</label>
+                        <input type="text" id="plate" placeholder="e.g. WIA1002">
+                    </div>
+                    <div class="form-group">
+                        <label>Owner Name</label>
+                        <input type="text" id="name" placeholder="e.g. Howard">
+                    </div>
+                    <button class="primary" onclick="arrive()" style="width: 100%;">Add to Queue</button>
                 </div>
-            </div>
-        </div>
+                <h5>Live Queue Visualization</h5>
+                <div id="queue-visual-container" class="queue-container"></div>
 
-        <div id="view-gate" class="tab-content">
-            <div class="card" style="max-width: 500px;">
-                <div class="card-header">Vehicle Entry (Queue)</div>
-                <div class="form-group">
-                    <label>License Plate Number</label>
-                    <input type="text" id="plate" placeholder="e.g. WIA1002">
-                </div>
-                <div class="form-group">
-                    <label>Owner Name</label>
-                    <input type="text" id="name" placeholder="e.g. Howard">
-                </div>
-                <button class="primary" onclick="arrive()" style="width: 100%;">Add to Queue</button>
-            </div>
-            <h5>Live Queue Visualization</h5>
-            <div id="queue-visual-container" class="queue-container"></div>
-
-            <div class="card" style="max-width: 500px;">
-                <div class="card-header">Gate Operations</div>
-                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px;">Process the next vehicle using the Min-Heap algorithm, or reverse the last entry.</p>
-                <div class="btn-row">
-                    <button class="success" style="flex: 1;" onclick="process()">Process Next Vehicle</button>
-                    <button class="danger" onclick="undo()">Undo Entry</button>
-                </div>
-                <div id="processResult" style="margin-top:20px;display:none">
-                    <div style="background:var(--bg-color);padding:12px;border-radius:6px;border-left:4px solid var(--success)">
-                        <div style="font-weight:600;color:var(--text-main);margin-bottom:8px">Assigned Slot: <span id="resultSlot" style="color:var(--primary)">—</span></div>
-                        <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Shortest Path:</div>
-                        <div id="resultPath" style="font-family:monospace;font-size:12px;color:var(--primary);line-height:1.6"></div>
+                <div class="card" style="max-width: 500px;">
+                    <div class="card-header">Gate Operations</div>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px;">Process the next vehicle using the Min-Heap algorithm, or reverse the last entry.</p>
+                    <div class="btn-row">
+                        <button class="success" style="flex: 1;" onclick="process()">Process Next Vehicle</button>
+                        <button class="danger" onclick="undo()">Undo Entry</button>
+                    </div>
+                    <div id="processResult" style="margin-top:20px;display:none">
+                        <div style="background:var(--bg-color);padding:12px;border-radius:6px;border-left:4px solid var(--success)">
+                            <div style="font-weight:600;color:var(--text-main);margin-bottom:8px">Assigned Slot: <span id="resultSlot" style="color:var(--primary)">—</span></div>
+                            <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Shortest Path:</div>
+                            <div id="resultPath" style="font-family:monospace;font-size:12px;color:var(--primary);line-height:1.6"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px">
+                        <label style="font-size:13px;color:var(--text-muted)">Vehicle Exit (plate)</label>
+                        <div style="display:flex;gap:8px;margin-top:6px">
+                            <input id="exitPlate" placeholder="Plate to exit" style="flex:1;padding:8px;border-radius:6px;border:1px solid var(--border)" />
+                            <button class="primary" onclick="exitVehicle()">Process Exit</button>
+                        </div>
+                        <div id="exitFeedback" style="margin-top:8px;color:var(--text-muted)"></div>
                     </div>
                 </div>
-                <div style="margin-top:12px">
-                    <label style="font-size:13px;color:var(--text-muted)">Vehicle Exit (plate)</label>
-                    <div style="display:flex;gap:8px;margin-top:6px">
-                        <input id="exitPlate" placeholder="Plate to exit" style="flex:1;padding:8px;border-radius:6px;border:1px solid var(--border)" />
-                        <button class="primary" onclick="exitVehicle()">Process Exit</button>
+            </div>
+            <div>
+                <div class="card">
+                    <div class="card-header">Live Parking Lot Topology</div>
+                    <div class="map-container" id="parking-map">
+                        [ Parking Graph / Canvas Goes Here ]
                     </div>
-                    <div id="exitFeedback" style="margin-top:8px;color:var(--text-muted)"></div>
                 </div>
             </div>
         </div>
@@ -186,8 +190,9 @@
             </div>
 
             <div class="card">
-                <div class="card-header">All Records (Linked List - Most Recent First)</div>
-                <button class="primary" onclick="viewAll()">Display All Records</button>
+                <div class="card-header" id="records-header">All Records (Linked List - Most Recent First)</div>
+                <button id="btn-unsorted" class="primary" onclick="viewAll()">Display All Records</button>
+                <button id="btn-sorted" class="secondary" onclick="fetchSortedRecords()">Sort A-Z (AVL Tree)</button>
                 <div class="result-box" id="all-records">Click Display All Records to load database.</div>
             </div>
         </div>
@@ -346,6 +351,26 @@
             const res = await fetch(`/api/all`);
             const data = await res.json();
             const resultBox = document.getElementById('all-records');
+            document.getElementById('records-header').innerText = "All Records (Linked List - Most Recent First)";
+            document.getElementById('btn-unsorted').className = "primary";
+            document.getElementById('btn-sorted').className = "secondary";
+            
+            if(data.length === 0) {
+                resultBox.innerText = "Database is empty.";
+                return;
+            }
+            
+            let listHTML = data.map((v, i) => `${i + 1}. [${v.plateNumber}] - ${v.ownerName}`).join('\n');
+            resultBox.innerText = listHTML;
+        }
+
+        async function fetchSortedRecords() {
+            const res = await fetch(`/api/sorted`);
+            const data = await res.json();
+            const resultBox = document.getElementById('all-records');
+            document.getElementById('records-header').innerText = "All Records (AVL Tree - Sorted A-Z)";
+            document.getElementById('btn-sorted').className = "primary";
+            document.getElementById('btn-unsorted').className = "secondary";
             
             if(data.length === 0) {
                 resultBox.innerText = "Database is empty.";
@@ -709,6 +734,7 @@
             document.getElementById('name').value = '';
             await fetchStats();
             await refreshSlots();
+            viewAll();
         }
 
         async function process() {
@@ -750,6 +776,7 @@
             } else if (data.message.includes('empty')) {
                 addLogEntry('PROCESS', 'Processing failed - Queue is empty');
             }
+            viewAll();
         }
 
         async function undo() {
@@ -763,6 +790,7 @@
             }
             await fetchStats();
             await refreshSlots();
+            viewAll();
         }
 
         async function exitVehicle(){
@@ -778,6 +806,7 @@
             document.getElementById('exitPlate').value='';
             await fetchStats();
             await refreshSlots();
+            viewAll();
         }
 
         // initial load and polling
