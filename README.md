@@ -58,6 +58,15 @@ A single vehicle arrival touches **all five structures** in sequence: queue → 
 
 ---
 
+## Interactive Dashboard (Frontend)
+
+The system includes a fully responsive, modern web dashboard (`http://localhost:8081`) that visualizes the data structures in real-time:
+- **Live FIFO Queue:** A dynamic visual queue that updates instantly as vehicles arrive and are processed.
+- **Dynamic Topology Map:** The right-hand panel renders the Graphviz DOT string natively in the browser. When a vehicle is processed, the map instantly updates to show the Dijkstra shortest path (yellow line) and marks the assigned slot in red with the vehicle's plate number.
+- **Reactive Database View:** Toggle seamlessly between "Most Recent First" (Linked List) and "Sorted A-Z" (AVL Tree) without reloading the page.
+
+---
+
 ## Complexity Summary
 
 | Operation | Structure | Complexity |
@@ -111,7 +120,8 @@ dot -Tpng slotify.dot -o slotify.png
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/api/search?plate=ABC-123` | Plate lookup via HashMap (`O(1)` avg). Returns vehicle info along with real-time status (In Queue or Parked with Slot ID). |
-| `GET` | `/api/all` | All vehicles sorted by plate (AVL BST in-order traversal) |
+| `GET` | `/api/all` | All vehicle records in arrival order (Doubly Linked List reverse traversal). |
+| `GET` | `/api/sorted` | All vehicles sorted alphabetically by plate (AVL BST in-order traversal) |
 | `GET` | `/api/slots` | Current available slot list from the min-heap |
 | `GET` | `/api/stats` | System statistics and live `queueDetails` array used for dynamic FIFO queue UI visualization. |
 
