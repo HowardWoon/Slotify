@@ -168,7 +168,7 @@ public class RouteGraph {
             String nodeName = labelForDot(nodeId);
             if (nodeId >= 100) {
                 String plate = occupiedSlotPlates.get(nodeId);
-                String label = plate == null ? "Slot " + nodeId : "Slot " + nodeId + "\\n[" + plate + "]";
+                String label = plate == null ? "Slot " + nodeId : "Slot " + nodeId + " [" + plate + "]";
                 String fillColor = plate == null ? "green" : "red";
                 sb.append("  ").append(nodeName).append(" [label=\"").append(label)
                   .append("\", shape=\"box\", style=\"filled,rounded\", fillcolor=\"")
