@@ -15,15 +15,35 @@
 	<description>Smart Parking &amp; Traffic Management System</description>
 	<properties>
 		<java.version>25</java.version>
+		<!-- Force a compatible bytecode target so Spring Boot repackage works
+		     when using a newer JDK on developer machines. Compile using the
+		     Java compiler 'release' option set to 21 to produce class files
+		     Spring Boot plugin expectations while allowing runtime to be
+		     Java 25. Adjust if you upgrade Spring Boot to a version that
+		     supports Java 25 class files. -->
+		<maven.compiler.release>21</maven.compiler.release>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<release>${maven.compiler.release}</release>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
