@@ -134,7 +134,7 @@
                     <div class="card-header">Vehicle Entry (Queue)</div>
                     <div class="form-group">
                         <label>License Plate Number</label>
-                        <input type="text" id="plate" placeholder="e.g. WIA1002">
+                        <input type="text" id="plate" placeholder="e.g. WIA1002" pattern="[A-Za-z0-9 \-]+" title="Only letters, numbers, spaces, and hyphens are allowed">
                     </div>
                     <div class="form-group">
                         <label>Owner Name</label>
@@ -293,6 +293,11 @@
         // --- API Calls ---
         async function arrive() {
             const plate = document.getElementById('plate').value;
+            const regex = /^[A-Za-z0-9 \-]+$/;
+            if(plate && !regex.test(plate)) {
+                alert("Invalid plate format. Please use only letters, numbers, spaces, and hyphens.");
+                return;
+            }
             const name = document.getElementById('name').value;
             if(!plate || !name) return showToast("Please fill both fields.", "error");
             
@@ -722,6 +727,11 @@
         // --- Hook map updates into existing actions ---
         async function arrive() {
             const plate = document.getElementById('plate').value;
+            const regex = /^[A-Za-z0-9 \-]+$/;
+            if(plate && !regex.test(plate)) {
+                alert("Invalid plate format. Please use only letters, numbers, spaces, and hyphens.");
+                return;
+            }
             const name = document.getElementById('name').value;
             if(!plate || !name) return showToast("Please fill both fields.", "error");
             const res = await fetch(`/api/arrive?plate=${plate}&name=${name}`, { method: 'POST' });
