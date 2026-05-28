@@ -60,10 +60,16 @@ A single vehicle arrival touches **all five structures** in sequence: queue → 
 
 ## Interactive Dashboard (Frontend)
 
-The system includes a fully responsive, modern web dashboard (`http://localhost:8081`) that visualizes the data structures in real-time:
-- **Live FIFO Queue:** A dynamic visual queue that updates instantly as vehicles arrive and are processed.
-- **Dynamic Topology Map:** The right-hand panel renders the Graphviz DOT string natively in the browser. When a vehicle is processed, the map instantly updates to show the Dijkstra shortest path (yellow line) and marks the assigned slot in red with the vehicle's plate number.
-- **Reactive Database View:** Toggle seamlessly between "Most Recent First" (Linked List) and "Sorted A-Z" (AVL Tree) without reloading the page.
+The system includes a fully responsive, high-fidelity web command center (`http://localhost:8081`) that visually exposes and animates the underlying data structures in real-time:
+- **High-Tech Branded OS Boot Loader:** Features a modern, advanced full-screen radar HUD concentric ring loader with progressive status animations, a segmented loading bar, and active Node/Sensor panels to eliminate white browser flashes.
+- **Visual Doubly Linked List Pointers:** Every vehicle database card displays live Prev and Next node memory link addresses (`Prev: [PLATE] ↔ Next: [PLATE]`) directly on-screen to illustrate dynamic RAM linkages.
+- **Collapsible LIFO Stack Action Panel:** Renders Gate Operations backtrack history. Custom green `PUSH` and red `POP` badges flash during action updates.
+- **Min-Heap Triangle Tree Visualizer:** Available slots are displayed as a geometric binary tree, animating extract-min transitions and priority bubble-up re-heapification in real-time.
+- **Dijkstra pathing HUD & Edge Weights:** Graph driveways display glowing active edge distances. A canvas HUD overlay displays Dijkstra's algorithm time complexity alongside calculated `Explored Nodes` and `Shortest Path` node sizes.
+- **AVL Balanced BST Traversal:** In Database view, toggle `"Tree View [AVL]"` to observe a balanced alphabetic search tree. Plate queries sequentially pulse down left or right branches before flashing the target green.
+- **Hash Table Glow Flash:** Highlights the direct bucket slot match for $O(1)$ lookups with neon-cyan border sweeps for 1.5 seconds.
+- **System Integration Architecture Table:** Displays a technical summary tracing the concrete role and space/time complexities of all 7 data structures.
+- **Intelligent Layout Polish:** Clean multiline wrapping on pathing routes, sleek custom timeline scrollbars, and vibrant neon accents for clear, overlap-free dashboards.
 
 ---
 
@@ -138,7 +144,7 @@ dot -Tpng slotify.dot -o slotify.png
 
 ### Prerequisites
 
-- **Java 17 or newer** — check with `java -version`
+- **Java 21 or newer** — check with `java -version`
 - No system-wide Maven required — the Maven Wrapper (`mvnw` / `mvnw.cmd`) is included
 
 ### Run
@@ -198,21 +204,20 @@ The `CommandLineRunner` executes this sequence automatically on every startup:
 slotify/
 ├── src/main/java/com/slotify/
 │   ├── ds/
-│   │   ├── VehicleLinkedList.java   ← doubly linked list
-│   │   ├── ManualMinHeap.java       ← min-heap (insert, extractMin, heapifyUp/Down)
-│   │   └── AVLTree.java             ← self-balancing BST
+│   │   ├── VehicleLinkedList.java   ← Doubly Linked List vehicle database cache
+│   │   ├── ManualMinHeap.java       ← Core Min-Heap Priority Queue logic
+│   │   ├── RouteGraph.java          ← Bidirectional Graph + Dijkstra shortest path + DOT
+│   │   ├── GateManager.java         ← Timeline Arrival Queue & Undo Action LIFO Stack
+│   │   ├── SlotAssigner.java        ← Priority space allocation (Min-Heap wrapper)
+│   │   ├── SystemDatabase.java      ← Direct O(1) HashMap cache & Balanced AVL Tree
+│   │   └── UndoAction.java          ← Backtracking action model
 │   ├── service/
-│   │   ├── GateManager.java         ← queue + undo stack
-│   │   ├── SlotAssigner.java        ← wraps ManualMinHeap
-│   │   ├── RouteGraph.java          ← Dijkstra + DOT export
-│   │   ├── SystemDatabase.java      ← HashMap + AVL tree combined
-│   │   └── ParkingService.java      ← orchestrates the full flow
+│   │   └── ParkingService.java      ← Core workflow manager
 │   ├── model/
-│   │   ├── Vehicle.java
-│   │   └── UndoAction.java          ← vehicle + slot + timestamp
+│   │   └── Vehicle.java             ← Vehicle model
 │   ├── controller/
-│   │   └── ApiController.java       ← REST endpoints
-│   └── SlotifyApplication.java      ← CommandLineRunner boot demo
+│   │   └── ApiController.java       ← REST API endpoint controller
+│   └── SlotifyApplication.java      ← CommandLineRunner boot sequence logger
 └── src/main/resources/
     └── application.properties       ← server.port=8081
 ```

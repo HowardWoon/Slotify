@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slotify | Smart Parking Command Center</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #050816;
@@ -25,6 +23,7 @@
             --emerald: #45f0a6;
             --amber: #ffd36d;
             --danger: #ff6b7a;
+            --success: var(--emerald);
             --shadow: 0 28px 70px rgba(0, 0, 0, 0.42);
             --shadow-soft: 0 14px 40px rgba(0, 0, 0, 0.22);
             --radius-xl: 30px;
@@ -128,6 +127,17 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
+        @keyframes ambientGlow {
+            0%, 100% {
+                background-color: var(--bg);
+                background-image: radial-gradient(circle at 50% 50%, rgba(109, 247, 255, 0.035) 0%, transparent 60%);
+            }
+            50% {
+                background-color: var(--bg);
+                background-image: radial-gradient(circle at 60% 40%, rgba(158, 139, 255, 0.045) 0%, transparent 60%);
+            }
+        }
+
         .app-shell {
             position: relative;
             z-index: 1;
@@ -138,6 +148,7 @@
             gap: 18px;
             padding: 18px;
             align-items: start;
+            animation: ambientGlow 8s ease-in-out infinite alternate;
         }
 
         .sidebar {
@@ -274,7 +285,7 @@
         .nav-item {
             border: 1px solid transparent;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
-            color: var(--muted);
+            color: rgba(255, 255, 255, 0.65);
             display: flex;
             align-items: center;
             justify-content: flex-start;
@@ -420,10 +431,17 @@
 
         .topbar-copy h1 {
             margin: 0;
-            font-size: clamp(1.42rem, 2vw, 2.05rem);
-            letter-spacing: 0.04em;
+            font-size: clamp(1.5rem, 2.2vw, 2.3rem);
+            letter-spacing: 0.08em;
             text-transform: uppercase;
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Orbitron', 'Rajdhani', 'Segoe UI Variable Display', 'Segoe UI', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--cyan), var(--blue), var(--violet));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 40px rgba(109, 247, 255, 0.25);
+            display: inline-block;
         }
 
         .topbar-copy p {
@@ -787,15 +805,29 @@
         .queue-timeline {
             display: grid;
             grid-auto-flow: column;
-            grid-auto-columns: minmax(220px, 1fr);
-            gap: 12px;
-            overflow: auto;
-            padding-bottom: 8px;
-            scrollbar-width: none;
+            grid-auto-columns: minmax(240px, 1fr);
+            gap: 14px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 12px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(109, 247, 255, 0.4) rgba(255, 255, 255, 0.05);
         }
         
         .queue-timeline::-webkit-scrollbar {
-            display: none;
+            height: 6px;
+            display: block;
+        }
+
+        .queue-timeline::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 999px;
+        }
+
+        .queue-timeline::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            border-radius: 999px;
+            box-shadow: 0 0 10px var(--cyan);
         }
 
         .queue-item {
@@ -1079,10 +1111,12 @@
 
         .panel-head {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
         }
 
         .panel-head h2,
@@ -1166,7 +1200,8 @@
 
         .primary {
             background: var(--blue);
-            color: #ffffff;
+            color: var(--bg);
+            font-weight: 800;
             box-shadow: 0 10px 20px rgba(87, 199, 255, 0.2);
         }
 
@@ -1223,14 +1258,38 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 12px;
+            padding: 10px 16px;
             border-radius: 999px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.03));
             border: 1px solid rgba(148, 163, 184, 0.12);
-            font-size: 0.86rem;
+            font-size: 0.88rem;
         }
 
-        .chip strong { color: var(--text); }
+        .chip strong {
+            color: var(--text);
+            font-size: 1.15rem;
+            font-weight: 800;
+        }
+
+        .chip::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            display: inline-block;
+        }
+        .chip.blue::before {
+            background: var(--blue);
+            box-shadow: 0 0 8px var(--blue);
+        }
+        .chip.hot::before {
+            background: var(--emerald);
+            box-shadow: 0 0 8px var(--emerald);
+        }
+        .chip.violet::before {
+            background: var(--amber);
+            box-shadow: 0 0 8px var(--amber);
+        }
 
         .chip.hot { border-color: rgba(69, 240, 166, 0.22); }
         .chip.blue { border-color: rgba(87, 199, 255, 0.24); }
@@ -1459,9 +1518,48 @@
         .flow-box {
             padding: 10px 16px;
             border-radius: 12px;
-            background: linear-gradient(135deg, rgba(87, 199, 255, 0.12), rgba(158, 139, 255, 0.12));
-            border: 1px solid rgba(109, 247, 255, 0.2);
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .flow-icon {
+            margin-right: 8px;
+            font-size: 1.15rem;
+        }
+        
+        .flow-box.queue-box {
+            background: linear-gradient(135deg, rgba(87, 199, 255, 0.16), rgba(87, 199, 255, 0.08));
+            border: 1px solid rgba(87, 199, 255, 0.28);
+            color: var(--blue);
+            box-shadow: 0 0 20px rgba(87, 199, 255, 0.06);
+        }
+        
+        .flow-box.heap-box {
+            background: linear-gradient(135deg, rgba(255, 211, 109, 0.16), rgba(255, 211, 109, 0.08));
+            border: 1px solid rgba(255, 211, 109, 0.28);
+            color: var(--amber);
+            box-shadow: 0 0 20px rgba(255, 211, 109, 0.06);
+        }
+        
+        .flow-box.assign-box {
+            background: linear-gradient(135deg, rgba(69, 240, 166, 0.16), rgba(69, 240, 166, 0.08));
+            border: 1px solid rgba(69, 240, 166, 0.28);
+            color: var(--emerald);
+            box-shadow: 0 0 20px rgba(69, 240, 166, 0.06);
+        }
+
+        #view-gate.active {
+            grid-template-columns: minmax(0, 45fr) minmax(380px, 55fr);
+        }
+
+        .hash-formula {
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+            font-size: 0.92rem;
+            color: var(--amber);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-shadow: 0 0 10px rgba(255, 211, 109, 0.24);
         }
 
         .flow-arrow {
@@ -1472,9 +1570,9 @@
         .path-row {
             display: flex;
             align-items: center;
-            overflow-x: auto;
-            gap: 4px;
-            padding-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 6px 0;
         }
 
         .path-pill {
@@ -1688,7 +1786,7 @@
             color: #081126;
         }
 
-        .log-tag.arrival { background: linear-gradient(135deg, #76f2ff, #74a3ff); }
+        .log-tag.arrival { background: linear-gradient(135deg, #ffd36d, #ffa000); color: #000000; font-weight: bold; }
         .log-tag.process { background: linear-gradient(135deg, #7dffca, #4ec8ff); }
         .log-tag.exit { background: linear-gradient(135deg, #ffcb6d, #ff8fa4); }
         .log-tag.search { background: linear-gradient(135deg, #d5a1ff, #9ad8ff); }
@@ -1831,9 +1929,502 @@
             .log-dock { position: relative; right: auto; bottom: auto; width: auto; margin: 0 18px 18px; }
             .toast-container { left: 18px; right: 18px; }
         }
+
+        /* PREMIUM HIGH-TECH radar HUD LOADING OVERLAY */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, #061026 0%, #02050c 100%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            color-scheme: dark;
+        }
+        .loading-overlay::before,
+        .loading-overlay::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background-image: 
+                radial-gradient(circle at 10% 10%, var(--cyan) 2px, transparent 2px),
+                radial-gradient(circle at 90% 30%, var(--blue) 2px, transparent 2px),
+                radial-gradient(circle at 50% 80%, var(--violet) 2px, transparent 2px);
+            background-size: 80px 80px;
+            opacity: 0.15;
+            pointer-events: none;
+            filter: blur(1px);
+        }
+        .loading-overlay::before {
+            top: 5%;
+            left: 5%;
+            animation: floaty 12s ease-in-out infinite alternate;
+        }
+        .loading-overlay::after {
+            bottom: 5%;
+            right: 5%;
+            animation: floaty 16s ease-in-out infinite alternate-reverse;
+        }
+        .loader-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            z-index: 10;
+        }
+        .hud-logo-container {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            margin-bottom: 28px;
+            display: grid;
+            place-items: center;
+        }
+        .hud-circle-outer {
+            position: absolute;
+            inset: 0;
+            border: 2px dashed rgba(109, 247, 255, 0.15);
+            border-radius: 50%;
+            animation: rotateCW 20s linear infinite;
+        }
+        .hud-circle-middle {
+            position: absolute;
+            inset: 16px;
+            border: 3px solid transparent;
+            border-top-color: var(--cyan);
+            border-bottom-color: var(--cyan);
+            border-radius: 50%;
+            opacity: 0.85;
+            animation: rotateCCW 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            box-shadow: 0 0 15px rgba(109, 247, 255, 0.2);
+        }
+        .hud-circle-inner {
+            position: absolute;
+            inset: 32px;
+            border: 1.5px solid rgba(87, 199, 255, 0.25);
+            border-left-color: var(--blue);
+            border-right-color: var(--blue);
+            border-radius: 50%;
+            animation: rotateCW 4s linear infinite;
+        }
+        .hud-center-shield {
+            position: absolute;
+            width: 76px;
+            height: 76px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        @keyframes rotateCW {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes rotateCCW {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+        .loader-logo-wrap {
+            font-family: 'Orbitron', 'Rajdhani', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            color: #ffffff;
+            line-height: 1;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-indent: 0.18em;
+        }
+        .loader-logo-o {
+            color: var(--cyan);
+            text-shadow: 0 0 25px rgba(109, 247, 255, 0.8);
+            position: relative;
+        }
+        .loader-subtitle-wrap {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: 0.4em;
+            color: var(--cyan);
+            text-transform: uppercase;
+            margin-bottom: 42px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+        .loader-subtitle-wrap::before,
+        .loader-subtitle-wrap::after {
+            content: "";
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            flex: 1;
+            margin: 0 15px;
+            max-width: 60px;
+        }
+        .progress-bar-shell {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 82%;
+            margin-bottom: 24px;
+        }
+        .loader-progress-bar {
+            flex: 1;
+            height: 18px;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1.5px solid rgba(109, 247, 255, 0.45);
+            box-shadow: 0 0 15px rgba(109, 247, 255, 0.1);
+            padding: 2px;
+        }
+        .loader-progress {
+            height: 100%;
+            width: 0%;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--cyan) 0px,
+                var(--cyan) 5px,
+                transparent 5px,
+                transparent 7px
+            );
+            box-shadow: 0 0 12px var(--cyan);
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+        .loader-percent-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--cyan);
+            min-width: 48px;
+            text-align: right;
+            text-shadow: 0 0 8px rgba(109, 247, 255, 0.4);
+        }
+        .loader-status-bracket {
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+            font-size: 0.92rem;
+            color: rgba(109, 247, 255, 0.85);
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            text-shadow: 0 0 10px rgba(109, 247, 255, 0.3);
+        }
+        .loader-status-bracket span.bracket {
+            color: var(--cyan);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .loader-dec-left,
+        .loader-dec-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            color: rgba(148, 163, 184, 0.42);
+            text-align: left;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .loader-dec-left {
+            left: -12%;
+        }
+        .loader-dec-right {
+            right: -12%;
+            text-align: right;
+        }
+        .loader-dec-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        /* LIFO UNDO STACK STATE PANEL */
+        .stack-panel {
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            transition: all 0.3s ease;
+        }
+        .stack-list {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .stack-node {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.045);
+            border-left: 4px solid var(--violet);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            animation: listIn 0.3s ease both;
+            border: 1px solid rgba(148, 163, 184, 0.08);
+            border-left-width: 4px;
+        }
+        .stack-node.action-push {
+            border-left-color: var(--emerald);
+            animation: pushFlash 0.7s ease;
+        }
+        .stack-node.action-pop {
+            border-left-color: var(--danger);
+            animation: popFlash 0.7s ease;
+        }
+        @keyframes pushFlash {
+            0% { background: rgba(69, 240, 166, 0.22); }
+            100% { background: rgba(255, 255, 255, 0.045); }
+        }
+        @keyframes popFlash {
+            0% { background: rgba(255, 107, 122, 0.22); }
+            100% { background: rgba(255, 255, 255, 0.045); }
+        }
+
+        /* MIN-HEAP TRIANGLE SVG DIAGRAM */
+        .heap-container {
+            margin-top: 12px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: var(--radius-md);
+        }
+        .heap-svg-shell {
+            height: 160px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.18);
+            border-radius: var(--radius-sm);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* AVL TREE DIALOG */
+        .avl-container {
+            margin-top: 14px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            display: none;
+            animation: fadeUp 0.3s ease both;
+        }
+        .avl-svg-shell {
+            height: 220px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.18);
+            border-radius: var(--radius-sm);
+            margin-top: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* DIJKSTRA STEP HUD CANVAS OVERLAY */
+        .path-step-counter {
+            display: none !important;
+        }
+
+        /* DS INFO DYNAMIC TOOLTIP STYLING */
+        .ds-title-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: help;
+        }
+        .ds-info-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(109, 247, 255, 0.1);
+            border: 1px solid rgba(109, 247, 255, 0.32);
+            color: var(--cyan);
+            font-size: 0.72rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            box-shadow: 0 0 6px rgba(109, 247, 255, 0.12);
+        }
+        .ds-title-container:hover .ds-info-badge {
+            background: rgba(109, 247, 255, 0.26);
+            border-color: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+            transform: scale(1.08);
+        }
+        .ds-tooltip {
+            position: absolute;
+            bottom: 130%;
+            left: 0;
+            z-index: 1000;
+            width: 290px;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            background: rgba(10, 18, 39, 0.94);
+            border: 1px solid rgba(109, 247, 255, 0.34);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.54), 0 0 20px rgba(109, 247, 255, 0.14);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #ffffff;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            opacity: 0;
+            transform: translateY(8px) scale(0.97);
+            pointer-events: none;
+            transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: normal;
+            text-transform: none;
+            letter-spacing: normal;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        .ds-title-container:hover .ds-tooltip {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        .ds-tooltip.right-align {
+            left: auto;
+            right: 0;
+        }
+
+        /* SYSTEM INTEGRATION COLLAPSIBLE TABLE */
+        .sys-arch-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.88rem;
+        }
+        .sys-arch-table th, .sys-arch-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .sys-arch-table th {
+            color: var(--cyan);
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        .sys-arch-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .sys-arch-card {
+            transition: all 0.3s ease;
+        }
+
+        /* DOUBLE LINKED LIST CONNECTOR */
+        .dll-connector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blue);
+            font-weight: bold;
+            font-size: 1.5rem;
+            animation: listIn 0.3s ease;
+            text-shadow: 0 0 10px rgba(87,199,255,0.4);
+        }
     </style>
 </head>
 <body>
+    <!-- Premium high-tech radar boot loading overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader-content">
+            <!-- Side Decorative Node/Sensor Panes -->
+            <div class="loader-dec-left">
+                <div>● NODE_07</div>
+                <div style="color: var(--cyan); font-weight: bold;">■ ONLINE</div>
+            </div>
+            <div class="loader-dec-right">
+                <div>● SENSOR_42</div>
+                <div style="color: var(--cyan); font-weight: bold;">■ ONLINE</div>
+            </div>
+            
+            <!-- Radar HUD concentric sweep rings -->
+            <div class="hud-logo-container">
+                <div class="hud-circle-outer"></div>
+                <div class="hud-circle-middle"></div>
+                <div class="hud-circle-inner"></div>
+                <div class="hud-center-shield">
+                    <svg width="68" height="68" viewBox="0 0 64 64" fill="none" style="overflow:visible; filter: drop-shadow(0 0 8px rgba(109, 247, 255, 0.75));">
+                        <!-- Outer Bracket Corners -->
+                        <path d="M 12 18 L 12 12 L 18 12" stroke="#6df7ff" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        <path d="M 52 18 L 52 12 L 46 12" stroke="#6df7ff" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        <path d="M 12 46 L 12 52 L 18 52" stroke="#6df7ff" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        <path d="M 52 46 L 52 52 L 46 52" stroke="#6df7ff" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        
+                        <!-- Wireless Signal Waves -->
+                        <path d="M 23 15 Q 32 8 41 15" stroke="#6df7ff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                        <path d="M 27 18 Q 32 13 37 18" stroke="#6df7ff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                        
+                        <!-- Shield P Rectangle -->
+                        <rect x="22" y="22" width="20" height="20" rx="4" fill="rgba(10, 24, 52, 0.9)" stroke="#6df7ff" stroke-width="2"/>
+                        <text x="32" y="33" text-anchor="middle" dominant-baseline="middle" font-family="'Orbitron', 'Segoe UI', sans-serif" font-size="14" font-weight="900" fill="#ffffff">P</text>
+                        
+                        <!-- Car Vector Outline -->
+                        <path d="M 28 47 L 36 47 C 38 47 38 58 36 58 L 28 58 C 26 58 26 47 28 47 Z" fill="none" stroke="#6df7ff" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M 29 50 L 35 50 C 36 50 36 53 35 53 L 29 53 C 28 53 28 50 29 50 Z" fill="none" stroke="#6df7ff" stroke-width="1"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- White and cyan styled SLOTIFY brand text -->
+            <div class="loader-logo-wrap">
+                <span>SL</span><span class="loader-logo-o">O</span><span>TIFY</span>
+            </div>
+            
+            <!-- Spaced subtitle -->
+            <div class="loader-subtitle-wrap">
+                <span>Smart Parking OS</span>
+            </div>
+            
+            <!-- Progress bar capsule border and percent values -->
+            <div class="progress-bar-shell">
+                <div class="loader-progress-bar">
+                    <div id="loader-progress" class="loader-progress"></div>
+                </div>
+                <div id="loader-percent" class="loader-percent-label">0%</div>
+            </div>
+            
+            <!-- Monospace status text in brackets -->
+            <div class="loader-status-bracket">
+                <span class="bracket">[</span>
+                <span>•</span>
+                <span id="loader-status-text" style="min-width: 320px; display: inline-block;">Initializing topology engine...</span>
+                <span>•</span>
+                <span class="bracket">]</span>
+            </div>
+        </div>
+    </div>
+
     <div class="app-shell">
         <aside class="sidebar" id="sidebar">
             <div class="brand-block">
@@ -1927,7 +2518,21 @@
                     <div class="glass-card">
                         <div class="panel-head">
                             <div>
-                                <h3 class="canvas-label">Parking Lot Canvas</h3>
+                                <div class="ds-title-container">
+                                    <h3 class="canvas-label">Parking Lot Canvas</h3>
+                                    <span class="ds-info-badge">ⓘ</span>
+                                    <div class="ds-tooltip" id="overview-map-tooltip">
+                                        <strong>Graph & Dijkstra Shortest Path</strong><br>
+                                        Finds the mathematically shortest driveway path from entrance to slot.<br>
+                                        Time Complexity: <strong style="color:var(--cyan)">O(E log V)</strong><br>
+                                        Space Complexity: <strong style="color:var(--cyan)">O(V + E)</strong><br>
+                                        <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0;">
+                                        <span class="tooltip-hud-content">Dijkstra engine idle. Process a vehicle to see path steps.</span>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.78rem; color: var(--blue); margin-top: 4px; font-weight: 500; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; text-transform: uppercase;">
+                                    Adjacency Graph &middot; Dijkstra Shortest Path
+                                </div>
                             </div>
                         </div>
                         <div class="map-shell overview-map-shell route-map" id="overview-map">
@@ -1959,6 +2564,80 @@
                             <span class="chip violet"><strong id="overview-activity-count">0</strong> events</span>
                         </div>
                     </div>
+
+                    <!-- System Architecture Integration card (Task 8) -->
+                    <div class="glass-card sys-arch-card" id="sys-arch-card">
+                        <div class="panel-head" onclick="toggleSysArch()" style="cursor: pointer; user-select: none;">
+                            <div>
+                                <div class="ds-title-container">
+                                    <h3>System Integration Architecture</h3>
+                                    <span class="ds-info-badge">ⓘ</span>
+                                    <div class="ds-tooltip">
+                                        <strong>System Integration Architecture</strong><br>
+                                        Coordinates high-speed vehicle ingestion, sorting, search, allocation, and routing.<br>
+                                        Time Complexity: <strong style="color:var(--cyan)">O(1) to O(E log V)</strong><br>
+                                        Space Complexity: <strong style="color:var(--cyan)">O(V + E)</strong>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--cyan); margin-top: 4px; font-weight: 500; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; text-transform: uppercase;">
+                                    Integrated O(1) / O(E log V) Core Flow
+                                </div>
+                                <span class="panel-caption" style="display: block; margin-top: 2px;">Click to collapse/expand system linkages</span>
+                            </div>
+                            <span id="sys-arch-toggle-icon" style="color: var(--cyan); font-weight: bold;">[−]</span>
+                        </div>
+                        <div id="sys-arch-content" style="transition: all 0.3s ease; overflow: hidden; max-height: 720px;">
+                            <p class="panel-caption" style="margin-bottom: 12px; color: #dbe6f7; line-height: 1.5;">
+                                This system integrates **seven critical data structures** to coordinate high-speed vehicle ingestion, sorting, search, allocation, and routing.
+                            </p>
+                            <table class="sys-arch-table">
+                                <thead>
+                                    <tr>
+                                        <th>Data Structure</th>
+                                        <th>Role in Slotify</th>
+                                        <th>Time/Space Complexity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Doubly Linked List</strong></td>
+                                        <td>Dynamic storage of physical vehicle logs in the database.</td>
+                                        <td style="color: var(--emerald)">O(1) / O(n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>FIFO Queue</strong></td>
+                                        <td>Arriving vehicle timeline waiting for gate assignment.</td>
+                                        <td style="color: var(--emerald)">O(1) / O(n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LIFO Stack</strong></td>
+                                        <td>Backtracking and reversing operations (Undo Entry).</td>
+                                        <td style="color: var(--emerald)">O(1) / O(n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Min-Heap</strong></td>
+                                        <td>Priority allocation of nearest available parking spaces.</td>
+                                        <td style="color: var(--emerald)">O(log n) / O(n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Graph (Dijkstra)</strong></td>
+                                        <td>Driveway routing from gates to allocated bays.</td>
+                                        <td style="color: var(--emerald)">O(E log V) / O(V+E)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>AVL Tree</strong></td>
+                                        <td>Balanced binary search index for plates.</td>
+                                        <td style="color: var(--emerald)">O(log n) / O(n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Hash Table</strong></td>
+                                        <td>O(1) instantaneous record retrieval by plate.</td>
+                                        <td style="color: var(--emerald)">O(1) / O(n)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -1967,7 +2646,17 @@
                     <div class="glass-card">
                         <div class="panel-head">
                             <div>
-                                <h3>Vehicle Entry Control</h3>
+                                <div class="ds-title-container">
+                                    <h3>Vehicle Entry Control</h3>
+                                    <span class="ds-info-badge">ⓘ</span>
+                                    <div class="ds-tooltip">
+                                        <strong>Vehicle Entry Control</strong><br>
+                                        Coordinates real-time vehicle registration and entry timeline management.
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.78rem; color: var(--muted-2); margin-top: 4px; font-weight: 500; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; text-transform: uppercase;">
+                                    Real-Time Entry Gate Manager
+                                </div>
                             </div>
                         </div>
                         <div class="form-grid">
@@ -1992,7 +2681,21 @@
                     <div class="glass-card">
                         <div class="panel-head">
                             <div>
-                                <h3>Live Queue Timeline</h3>
+                                <div class="ds-title-container">
+                                    <h3>Live Queue Timeline</h3>
+                                    <span class="ds-info-badge" style="border-color: var(--blue); color: var(--blue);">ⓘ</span>
+                                    <div class="ds-tooltip" style="border-color: var(--blue)">
+                                        <strong>FIFO Entry Queue</strong><br>
+                                        Processes incoming vehicle arrivals in chronological First-In, First-Out order.<br>
+                                        Time Complexity:<br>
+                                        &bull; Enqueue (Arrival): <strong style="color:var(--cyan)">O(1)</strong><br>
+                                        &bull; Dequeue (Process): <strong style="color:var(--cyan)">O(1)</strong><br>
+                                        Space Complexity: <strong style="color:var(--cyan)">O(n)</strong>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.78rem; color: var(--blue); margin-top: 4px; font-weight: 500; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; text-transform: uppercase;">
+                                    FIFO Timeline Queue &middot; O(1) Operations
+                                </div>
                             </div>
                         </div>
                         <div id="queue-visual-container" class="queue-timeline"></div>
@@ -2002,20 +2705,17 @@
                     <div class="glass-card">
                         <div class="panel-head">
                             <div>
-                                <h3>Vehicle Exit</h3>
-                            </div>
-                        </div>
-                        <div class="search-bar">
-                            <input id="exitPlate" placeholder="Plate to exit" />
-                            <button class="danger magnetic" data-magnetic type="button" onclick="exitVehicle()">Process Exit</button>
-                            <div id="exitFeedback" class="panel-caption"></div>
-                        </div>
-                    </div>
-
-                    <div class="glass-card">
-                        <div class="panel-head">
-                            <div>
-                                <h3>Gate Operations</h3>
+                                <div class="ds-title-container">
+                                    <h3>Gate Operations</h3>
+                                    <span class="ds-info-badge" style="border-color: var(--cyan); color: var(--cyan);">ⓘ</span>
+                                    <div class="ds-tooltip" style="border-color: var(--cyan)">
+                                        <strong>Gate Actions Engine</strong><br>
+                                        Processes next vehicle and extracts nearest slots. Combines Queue, Min-Heap, Graph, AVL and Stack caches.
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.78rem; color: var(--cyan); margin-top: 4px; font-weight: 500; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; text-transform: uppercase;">
+                                    Vehicle Processing Engine
+                                </div>
                             </div>
                         </div>
                         <div class="btn-row">
@@ -2026,6 +2726,34 @@
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: sub; margin-right: 4px;"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg> Undo Entry
                             </button>
                         </div>
+                        
+                        <!-- Undo Stack (LIFO) visualizer panel (Task 3) -->
+                        <div class="stack-panel" id="stack-panel" style="margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;" onclick="toggleStackVisualizer()">
+                                <div class="ds-title-container" onclick="event.stopPropagation()">
+                                    <strong style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-2);">Undo Stack (LIFO)</strong>
+                                    <span class="ds-info-badge" style="border-color: var(--violet); color: var(--violet);">ⓘ</span>
+                                    <div class="ds-tooltip" style="border-color: var(--violet)">
+                                        <strong>LIFO Undo Stack</strong><br>
+                                        Reverses recent allocations in Last-In, First-Out order.<br>
+                                        Time Complexity:<br>
+                                        &bull; Push Action: <strong style="color:var(--cyan)">O(1)</strong><br>
+                                        &bull; Pop Action: <strong style="color:var(--cyan)">O(1)</strong><br>
+                                        Space Complexity: <strong style="color:var(--cyan)">O(n)</strong>
+                                    </div>
+                                </div>
+                                <span id="stack-toggle-icon" style="color: var(--violet); font-size: 0.85rem; font-weight: bold; margin-left: auto;">[−]</span>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--violet); margin-top: 4px; font-weight: 500; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; text-transform: uppercase; padding-left: 14px;">
+                                LIFO Undo Stack &middot; O(1) Operations
+                            </div>
+                            <div id="stack-content" style="transition: all 0.3s ease; overflow: hidden; max-height: 240px;">
+                                <div id="stack-list" class="stack-list">
+                                    <div class="empty-state" style="font-size: 0.85rem; text-align: center; color: var(--muted-2); margin-top: 10px;">Stack is currently empty. (LIFO operations appear here)</div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="queue-stage">
                             <div>
                                 <div class="process-bar"><span id="process-progress"></span></div>
@@ -2040,13 +2768,55 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="glass-card">
+                        <div class="panel-head">
+                            <div>
+                                <div class="ds-title-container">
+                                    <h3>Vehicle Exit</h3>
+                                    <span class="ds-info-badge" style="border-color: var(--danger); color: var(--danger);">ⓘ</span>
+                                    <div class="ds-tooltip" style="border-color: var(--danger)">
+                                        <strong>Vehicle Departure</strong><br>
+                                        Releases space back to Min-Heap and deletes logs across databases.<br>
+                                        Triggered Complexity:<br>
+                                        &bull; Heap Release: <strong style="color:var(--cyan)">O(log n)</strong><br>
+                                        &bull; AVL Deletion: <strong style="color:var(--cyan)">O(log n)</strong><br>
+                                        &bull; HashMap Eviction: <strong style="color:var(--cyan)">O(1)</strong><br>
+                                        &bull; LinkedList Removal: <strong style="color:var(--cyan)">O(n)</strong>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.78rem; color: var(--danger); margin-top: 4px; font-weight: 500; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; text-transform: uppercase;">
+                                    Space Releasing & O(log n) Eviction
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-bar">
+                            <input id="exitPlate" placeholder="Plate to exit" />
+                            <button class="danger magnetic" data-magnetic type="button" onclick="exitVehicle()">Process Exit</button>
+                            <div id="exitFeedback" class="panel-caption"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="section-stack">
                     <div class="glass-card">
                         <div class="panel-head">
                             <div>
-                                <h3>Live Parking Lot Topology</h3>
+                                <div class="ds-title-container">
+                                    <h3>Live Parking Lot Topology</h3>
+                                    <span class="ds-info-badge">ⓘ</span>
+                                    <div class="ds-tooltip" id="gate-map-tooltip">
+                                        <strong>Graph & Dijkstra Shortest Path</strong><br>
+                                        Finds the mathematically shortest driveway path from entrance to slot.<br>
+                                        Time Complexity: <strong style="color:var(--cyan)">O(E log V)</strong><br>
+                                        Space Complexity: <strong style="color:var(--cyan)">O(V + E)</strong><br>
+                                        <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0;">
+                                        <span class="tooltip-hud-content">Dijkstra engine idle. Process a vehicle to see path steps.</span>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.78rem; color: var(--blue); margin-top: 4px; font-weight: 500; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; text-transform: uppercase;">
+                                    Dijkstra Routing Engine &middot; O(E log V)
+                                </div>
                             </div>
                         </div>
                         <div class="map-shell route-map" id="gate-map">
@@ -2055,10 +2825,57 @@
                         </div>
                     </div>
 
+                    <!-- Min-Heap Priority Queue visualizer (Task 4) -->
+                    <div class="glass-card heap-container-card" id="heap-container-card" style="margin-bottom: 0;">
+                        <div class="panel-head" onclick="toggleHeapVisualizer()" style="cursor: pointer; user-select: none;">
+                            <div>
+                                <div class="ds-title-container" onclick="event.stopPropagation()">
+                                    <h3>Min-Heap Priority Queue</h3>
+                                    <span class="ds-info-badge" style="border-color: var(--emerald); color: var(--emerald);">ⓘ</span>
+                                    <div class="ds-tooltip" style="border-color: var(--emerald)">
+                                        <strong>Min-Heap Priority Queue</strong><br>
+                                        Sorts spaces by distance to root for O(1) peek allocation.<br>
+                                        Time Complexity:<br>
+                                        &bull; Peek Min Slot: <strong style="color:var(--cyan)">O(1)</strong><br>
+                                        &bull; Extract Min Slot: <strong style="color:var(--cyan)">O(log n)</strong><br>
+                                        &bull; Re-Heapify: <strong style="color:var(--cyan)">O(log n)</strong><br>
+                                        Space Complexity: <strong style="color:var(--cyan)">O(n)</strong>
+                                    </div>
+                                </div>
+                                <span class="panel-caption" style="display: block;">Triangle diagram of nearest slot priority</span>
+                            </div>
+                            <span id="heap-toggle-icon" style="color: var(--emerald); font-weight: bold; margin-left: auto;">[−]</span>
+                        </div>
+                        <div style="font-size: 0.78rem; color: var(--emerald); margin-top: 4px; font-weight: 500; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; text-transform: uppercase; padding-left: 22px;">
+                            Min-Heap Priority &middot; O(log n) Allocation
+                        </div>
+                        <div id="heap-content" style="transition: all 0.3s ease; overflow: hidden; max-height: 280px;">
+                            <p class="panel-caption" style="margin-bottom: 8px; color: #dbe6f7; line-height: 1.4;">
+                                Available slots are arranged as a binary min-heap. The nearest slot is at the root (top) for direct $O(1)$ access. Extraction and re-heapification take $O(\log n)$.
+                            </p>
+                            <div class="heap-svg-shell" id="heap-svg-shell" style="min-height: 160px; display: flex; align-items: center; justify-content: center;">
+                                <!-- Dynamic SVG heap rendering -->
+                            </div>
+                            <div class="table-note" style="margin-top: 8px; font-size: 0.78rem; text-align: center; color: var(--muted-2);">
+                                Comparison: **Linear search: O(n)** &middot; **Min-Heap: O(log n)**
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="glass-card">
                         <div class="panel-head">
                             <div>
-                                <h3>Parking Slot Heatmap</h3>
+                                <div class="ds-title-container">
+                                    <h3>Parking Slot Heatmap</h3>
+                                    <span class="ds-info-badge" style="border-color: var(--cyan); color: var(--cyan);">ⓘ</span>
+                                    <div class="ds-tooltip" style="border-color: var(--cyan)">
+                                        <strong>Parking Slot Heatmap</strong><br>
+                                        Displays dynamic real-time status of each physical slot bay.
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.78rem; color: var(--cyan); margin-top: 4px; font-weight: 500; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; text-transform: uppercase;">
+                                    Space Occupancy Grid
+                                </div>
                             </div>
                         </div>
                         <div id="slot-heatmap" class="heatmap-grid"></div>
@@ -2087,7 +2904,14 @@
                     <div class="glass-card database-search-shell">
                         <div class="panel-head" style="width: 100%;">
                             <div>
-                                <h3>Smart Record Search</h3>
+                                <div class="ds-title-container">
+                                    <h3>Smart Record Search</h3>
+                                    <span class="ds-info-badge">ⓘ</span>
+                                    <div class="ds-tooltip">
+                                        <strong>Smart Record Search</strong><br>
+                                        Enables ultra-fast database lookups using self-balancing trees and caches.
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="search-bar">
@@ -2103,13 +2927,52 @@
                     <div class="glass-card">
                         <div class="panel-head">
                             <div>
-                                <h3>Vehicle Records</h3>
+                                <div class="ds-title-container">
+                                    <h3>Vehicle Records</h3>
+                                    <span class="ds-info-badge" style="border-color: var(--blue); color: var(--blue);">ⓘ</span>
+                                    <div class="ds-tooltip" style="border-color: var(--blue)">
+                                        <strong>Doubly Linked List Database</strong><br>
+                                        Stores physical vehicle database records in dynamic RAM.<br>
+                                        Time Complexity:<br>
+                                        &bull; Insertion: <strong style="color:var(--cyan)">O(1)</strong><br>
+                                        &bull; Removal (by Plate): <strong style="color:var(--cyan)">O(n)</strong><br>
+                                        &bull; Traversal (Chronological): <strong style="color:var(--cyan)">O(n)</strong><br>
+                                        Space Complexity: <strong style="color:var(--cyan)">O(n)</strong>
+                                    </div>
+                                </div>
                             </div>
                             <div class="btn-row" style="margin: 0;">
                                 <button id="btn-unsorted" class="primary magnetic" data-magnetic type="button" onclick="viewAll()">Display All</button>
                                 <button id="btn-sorted" class="secondary magnetic" data-magnetic type="button" onclick="fetchSortedRecords()">Sort A-Z</button>
+                                <button id="btn-tree-toggle" class="secondary magnetic" data-magnetic type="button" onclick="toggleTreeVisualizer()">Tree View [AVL]</button>
                             </div>
                         </div>
+
+                        <!-- AVL Tree Visualizer (Task 6) -->
+                        <div class="avl-container" id="avl-tree-container" style="margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(148, 163, 184, 0.1); padding-bottom: 8px; margin-bottom: 10px;">
+                                <div class="ds-title-container">
+                                    <strong style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cyan);">AVL Balanced Tree Index</strong>
+                                    <span class="ds-info-badge">ⓘ</span>
+                                    <div class="ds-tooltip">
+                                        <strong>AVL Balanced BST Index</strong><br>
+                                        Self-balancing binary tree sorted alphabetically for stable logarithmic searching and sorting.<br>
+                                        Time Complexity:<br>
+                                        &bull; Search Plate: <strong style="color:var(--cyan)">O(log n)</strong><br>
+                                        &bull; Balance Rotations: <strong style="color:var(--cyan)">O(1)</strong><br>
+                                        Space Complexity: <strong style="color:var(--cyan)">O(n)</strong>
+                                    </div>
+                                </div>
+                                <span style="font-size: 0.75rem; color: var(--muted-2);">AVL Tree &middot; self-balancing index</span>
+                            </div>
+                            <p class="panel-caption" style="margin-bottom: 8px; color: #dbe6f7; line-height: 1.4;">
+                                Searches query a self-balancing AVL Tree sorted alphabetically by plate. Traversal path highlights in sequence (left branch if lesser, right if greater).
+                            </p>
+                            <div class="avl-svg-shell" id="avl-svg-shell" style="min-height: 220px; display: flex; align-items: center; justify-content: center;">
+                                <!-- Dynamic AVL tree SVG rendering -->
+                            </div>
+                        </div>
+
                         <div id="all-records" class="record-grid">
                             <div class="records-empty" style="grid-column: 1 / -1;">Click Display All to load the live database.</div>
                         </div>
@@ -2118,9 +2981,18 @@
                     <div class="glass-card">
                         <div class="panel-head">
                             <div>
-                                <h3>Hash Map — O(1) Lookup</h3>
+                                <div class="ds-title-container">
+                                    <h3>Hash Map</h3>
+                                    <span class="ds-info-badge" style="border-color: var(--amber); color: var(--amber);">ⓘ</span>
+                                    <div class="ds-tooltip" style="border-color: var(--amber)">
+                                        <strong>HashMap Cache</strong><br>
+                                        Constant-time active lookups via mathematical plate key mapping.<br>
+                                        Formula: <code style="color:var(--amber)">hashCode(plate) % tableSize</code><br>
+                                        Time Complexity: <strong style="color:var(--cyan)">O(1)</strong> Lookup / Cache Insert<br>
+                                        Space Complexity: <strong style="color:var(--cyan)">O(n)</strong>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="hash-formula canvas-label" style="text-transform: lowercase;">hash(plate) % 8 &rarr; bucket index</div>
                         </div>
                         <div id="hash-buckets" class="hash-row"></div>
                     </div>
@@ -2165,10 +3037,363 @@
             activeSearchPlate: '',
             routeAnimationToken: 0,
             tooltipTimer: null,
-            activeNodeTooltip: null
+            activeNodeTooltip: null,
+            mostRecentAssignedSlotId: null,
+            undoStack: [],
+            stackCollapsed: false,
+            heapCollapsed: false,
+            treeViewActive: false,
+            sysArchCollapsed: false
         };
 
         const svgNS = 'http://www.w3.org/2000/svg';
+
+        /* SYSTEM ARCHITECTURE TABLES COLLAPSE LOGIC */
+        function toggleSysArch() {
+            const content = document.getElementById('sys-arch-content');
+            const icon = document.getElementById('sys-arch-toggle-icon');
+            state.sysArchCollapsed = !state.sysArchCollapsed;
+            if (state.sysArchCollapsed) {
+                content.style.maxHeight = '0px';
+                icon.textContent = '[+]';
+            } else {
+                content.style.maxHeight = '720px';
+                icon.textContent = '[−]';
+            }
+        }
+
+        /* LIFO STACK UNDO ACTIONS PANEL RENDERING */
+        function toggleStackVisualizer() {
+            const content = document.getElementById('stack-content');
+            const icon = document.getElementById('stack-toggle-icon');
+            state.stackCollapsed = !state.stackCollapsed;
+            if (state.stackCollapsed) {
+                content.style.maxHeight = '0px';
+                icon.textContent = '[+]';
+            } else {
+                content.style.maxHeight = '240px';
+                icon.textContent = '[−]';
+            }
+        }
+
+        function renderUndoStack(flashNodeId = null, flashAction = 'push') {
+            const list = document.getElementById('stack-list');
+            if (!list) return;
+            if (!state.undoStack || state.undoStack.length === 0) {
+                list.innerHTML = `<div class="empty-state" style="font-size: 0.85rem; text-align: center; color: var(--muted-2); margin-top: 10px;">Stack is currently empty. (LIFO operations appear here)</div>`;
+                return;
+            }
+            list.innerHTML = '';
+            
+            // Render last 3 stack logs, newest on top
+            const displayItems = [...state.undoStack].slice(-3).reverse();
+            displayItems.forEach((action) => {
+                const node = document.createElement('div');
+                const isFlash = action.id === flashNodeId;
+                node.className = `stack-node ${isFlash ? 'action-' + flashAction : ''}`;
+                node.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-weight: bold; color: ${action.type === 'PUSH' ? 'var(--emerald)' : 'var(--danger)'};">${action.type}</span>
+                        <span style="color: var(--text); font-family: monospace; font-size:0.95rem;">${action.plate}</span>
+                    </div>
+                    <span style="font-size: 0.75rem; color: var(--muted-2);">${action.time}</span>
+                `;
+                list.appendChild(node);
+            });
+        }
+
+        function pushToUndoStack(plate) {
+            if (!state.undoStack) state.undoStack = [];
+            const actionId = Date.now();
+            const timeStr = formatTime(new Date());
+            state.undoStack.push({
+                id: actionId,
+                type: 'PUSH',
+                plate: plate,
+                time: timeStr
+            });
+            renderUndoStack(actionId, 'push');
+        }
+
+        function popFromUndoStack() {
+            if (!state.undoStack || state.undoStack.length === 0) return null;
+            const popped = state.undoStack.pop();
+            const actionId = Date.now();
+            
+            state.undoStack.push({
+                id: actionId,
+                type: 'POP',
+                plate: popped.plate,
+                time: formatTime(new Date())
+            });
+            renderUndoStack(actionId, 'pop');
+            
+            setTimeout(() => {
+                const idx = state.undoStack.findIndex(x => x.id === actionId);
+                if (idx !== -1) state.undoStack.splice(idx, 1);
+                renderUndoStack();
+            }, 750);
+            
+            return popped;
+        }
+
+        /* MIN-HEAP PRIORITY QUEUE BINARY TREE RENDERING */
+        function toggleHeapVisualizer() {
+            const content = document.getElementById('heap-content');
+            const icon = document.getElementById('heap-toggle-icon');
+            state.heapCollapsed = !state.heapCollapsed;
+            if (state.heapCollapsed) {
+                content.style.maxHeight = '0px';
+                icon.textContent = '[+]';
+            } else {
+                content.style.maxHeight = '280px';
+                icon.textContent = '[−]';
+            }
+        }
+
+        async function renderMinHeapTree(extractingSlotId = null) {
+            const shell = document.getElementById('heap-svg-shell');
+            if (!shell) return;
+            try {
+                const res = await fetch('/api/slots');
+                if (!res.ok) return;
+                const slots = await res.json();
+                
+                // Active unoccupied slots sorted by proximity (mimicking nearest slot Heap behavior)
+                const available = slots.filter(s => !s.isOccupied).sort((a, b) => a.slotId - b.slotId);
+                
+                if (available.length === 0) {
+                    shell.innerHTML = `<div class="empty-state" style="font-size: 0.85rem; color: var(--danger);">No active slots available. Heap is empty.</div>`;
+                    return;
+                }
+                
+                const width = shell.clientWidth || 360;
+                const rootX = width / 2;
+                
+                // Coordinates mapping for triangle binary tree heap
+                const pos = [
+                    { x: rootX, y: 30 },
+                    { x: rootX - 70, y: 90 },
+                    { x: rootX + 70, y: 90 },
+                    { x: rootX - 110, y: 142 },
+                    { x: rootX - 35, y: 142 },
+                    { x: rootX + 35, y: 142 },
+                    { x: rootX + 110, y: 142 }
+                ];
+                
+                let svgHTML = `<svg width="100%" height="160" style="overflow:visible;">`;
+                
+                // Connect lines
+                for (let i = 0; i < available.length; i++) {
+                    const parentIdx = Math.floor((i - 1) / 2);
+                    if (parentIdx >= 0 && parentIdx < pos.length && i < pos.length) {
+                        svgHTML += `<line x1="${pos[parentIdx].x}" y1="${pos[parentIdx].y}" x2="${pos[i].x}" y2="${pos[i].y}" stroke="rgba(69,240,166,0.3)" stroke-width="2" />`;
+                    }
+                }
+                
+                // Render tree node circles
+                for (let i = 0; i < available.length && i < pos.length; i++) {
+                    const slot = available[i];
+                    const point = pos[i];
+                    const isRoot = i === 0;
+                    const isExtracting = slot.slotId === extractingSlotId;
+                    
+                    let fill = 'rgba(10, 18, 39, 0.9)';
+                    let border = isRoot ? 'var(--amber)' : 'var(--emerald)';
+                    let size = isRoot ? 19 : 15;
+                    
+                    if (isExtracting) {
+                        fill = 'rgba(255, 107, 122, 0.25)';
+                        border = 'var(--danger)';
+                    }
+                    
+                    svgHTML += `
+                        <g>
+                            <circle cx="${point.x}" cy="${point.y}" r="${size}" fill="${fill}" stroke="${border}" stroke-width="${isRoot ? '3' : '2'}" style="transition: all 0.3s ease;" />
+                            <text x="${point.x}" y="${point.y + 1}" text-anchor="middle" dominant-baseline="middle" font-size="${isRoot ? '12px' : '10px'}" fill="#ffffff" font-weight="bold">${slot.slotId}</text>
+                            <text x="${point.x}" y="${point.y + (isRoot ? 30 : 25)}" text-anchor="middle" font-size="8px" fill="var(--muted-2)">${isRoot ? 'MIN ROOT' : 'HEAP ' + i}</text>
+                        </g>
+                    `;
+                }
+                
+                svgHTML += `</svg>`;
+                shell.innerHTML = svgHTML;
+            } catch (err) {
+                console.error('renderMinHeapTree', err);
+            }
+        }
+
+        /* AVL Balanced Tree Search visualizer */
+        function toggleTreeVisualizer() {
+            const container = document.getElementById('avl-tree-container');
+            const button = document.getElementById('btn-tree-toggle');
+            state.treeViewActive = !state.treeViewActive;
+            if (state.treeViewActive) {
+                container.style.display = 'block';
+                button.className = 'primary magnetic';
+                renderAVLTree();
+            } else {
+                container.style.display = 'none';
+                button.className = 'secondary magnetic';
+            }
+        }
+
+        function renderAVLTree(searchPlate = '') {
+            const shell = document.getElementById('avl-svg-shell');
+            if (!shell) return;
+            
+            const records = [...state.latestRecords];
+            if (records.length === 0) {
+                shell.innerHTML = `<div class="empty-state" style="font-size: 0.85rem; color: var(--muted-2);">Display All records to load the AVL Tree visualization.</div>`;
+                return;
+            }
+            
+            // Sort records alphabetically for binary BST structure
+            records.sort((a, b) => String(a.plateNumber).localeCompare(b.plateNumber));
+            
+            let treeNodes = [];
+            if (records.length === 1) {
+                treeNodes = [records[0]];
+            } else if (records.length === 2) {
+                treeNodes = [records[1], records[0]];
+            } else if (records.length === 3) {
+                treeNodes = [records[1], records[0], records[2]];
+            } else if (records.length === 4) {
+                treeNodes = [records[2], records[1], records[3], records[0]];
+            } else {
+                // sample 5 evenly balanced items
+                treeNodes = [
+                    records[Math.floor(records.length / 2)],             // Root (0)
+                    records[Math.floor(records.length / 4)],             // Left (1)
+                    records[Math.floor(records.length * 3 / 4)],         // Right (2)
+                    records[0],                                         // Left-Left (3)
+                    records[records.length - 1]                         // Right-Right (4)
+                ];
+            }
+            
+            const width = shell.clientWidth || 400;
+            const rootX = width / 2;
+            
+            const pos = [
+                { x: rootX, y: 32 },       // Root (0)
+                { x: rootX - 90, y: 92 },  // Left (1)
+                { x: rootX + 90, y: 92 },  // Right (2)
+                { x: rootX - 145, y: 155 }, // Left-Left (3)
+                { x: rootX + 145, y: 155 }  // Right-Right (4)
+            ];
+            
+            const connections = [
+                { parent: 0, child: 1 },
+                { parent: 0, child: 2 },
+                { parent: 1, child: 3 },
+                { parent: 2, child: 4 }
+            ];
+            
+            let svgHTML = `<svg width="100%" height="220" style="overflow:visible;">`;
+            
+            // Render connections
+            connections.forEach(conn => {
+                if (conn.parent < treeNodes.length && conn.child < treeNodes.length) {
+                    svgHTML += `<line id="avl-edge-${conn.parent}-${conn.child}" x1="${pos[conn.parent].x}" y1="${pos[conn.parent].y}" x2="${pos[conn.child].x}" y2="${pos[conn.child].y}" stroke="rgba(109,247,255,0.22)" stroke-width="2" />`;
+                }
+            });
+            
+            // Search Path mapping
+            let searchPath = [];
+            if (searchPlate && treeNodes.length > 0) {
+                const target = searchPlate.trim().toUpperCase();
+                let currentIdx = 0;
+                searchPath.push(0);
+                
+                while (currentIdx < treeNodes.length) {
+                    const currentPlate = String(treeNodes[currentIdx].plateNumber).toUpperCase();
+                    if (target === currentPlate) {
+                        break;
+                    } else if (target < currentPlate) {
+                        const nextIdx = currentIdx === 0 ? 1 : currentIdx === 1 ? 3 : -1;
+                        if (nextIdx !== -1 && nextIdx < treeNodes.length) {
+                            currentIdx = nextIdx;
+                            searchPath.push(currentIdx);
+                        } else {
+                            break;
+                        }
+                    } else {
+                        const nextIdx = currentIdx === 0 ? 2 : currentIdx === 2 ? 4 : -1;
+                        if (nextIdx !== -1 && nextIdx < treeNodes.length) {
+                            currentIdx = nextIdx;
+                            searchPath.push(currentIdx);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // Draw nodes
+            treeNodes.forEach((node, idx) => {
+                const point = pos[idx];
+                const isTarget = node.plateNumber === searchPlate;
+                const inPath = searchPath.includes(idx);
+                
+                let fill = 'rgba(10, 18, 39, 0.9)';
+                let stroke = inPath ? 'var(--cyan)' : 'rgba(148, 163, 184, 0.28)';
+                let strokeWidth = inPath ? '3' : '2';
+                
+                if (isTarget) {
+                    fill = 'rgba(69, 240, 166, 0.15)';
+                    stroke = 'var(--emerald)';
+                    strokeWidth = '4';
+                }
+                
+                svgHTML += `
+                    <g id="avl-node-${idx}" style="transition: all 0.3s ease;">
+                        <circle cx="${point.x}" cy="${point.y}" r="22" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" style="transition: all 0.3s ease;" />
+                        <text x="${point.x}" y="${point.y + 1}" text-anchor="middle" dominant-baseline="middle" font-size="10px" font-weight="bold" fill="#ffffff" font-family="monospace">${node.plateNumber}</text>
+                        <text x="${point.x}" y="${point.y + 36}" text-anchor="middle" font-size="8px" fill="var(--muted-2)">${node.ownerName}</text>
+                    </g>
+                `;
+            });
+            
+            svgHTML += `</svg>`;
+            shell.innerHTML = svgHTML;
+            
+            // Traversal sequence rendering
+            if (searchPath.length > 1) {
+                searchPath.forEach((nodeIdx, stepIdx) => {
+                    setTimeout(() => {
+                        const nodeGroup = document.getElementById(`avl-node-${nodeIdx}`);
+                        if (nodeGroup) {
+                            const circle = nodeGroup.querySelector('circle');
+                            circle.setAttribute('fill', 'rgba(87, 199, 255, 0.25)');
+                            circle.setAttribute('stroke', 'var(--cyan)');
+                            circle.style.filter = 'drop-shadow(0 0 8px var(--cyan))';
+                            
+                            if (stepIdx > 0) {
+                                const parentIdx = searchPath[stepIdx - 1];
+                                const line = document.getElementById(`avl-edge-${parentIdx}-${nodeIdx}`) || document.getElementById(`avl-edge-${nodeIdx}-${parentIdx}`);
+                                if (line) {
+                                    line.setAttribute('stroke', 'var(--cyan)');
+                                    line.setAttribute('stroke-width', '4');
+                                }
+                            }
+                        }
+                        
+                        if (stepIdx === searchPath.length - 1) {
+                            const isMatch = treeNodes[nodeIdx].plateNumber === searchPlate;
+                            setTimeout(() => {
+                                const finalGroup = document.getElementById(`avl-node-${nodeIdx}`);
+                                if (finalGroup) {
+                                    const finalCircle = finalGroup.querySelector('circle');
+                                    finalCircle.setAttribute('fill', isMatch ? 'rgba(69, 240, 166, 0.22)' : 'rgba(255, 107, 122, 0.22)');
+                                    finalCircle.setAttribute('stroke', isMatch ? 'var(--emerald)' : 'var(--danger)');
+                                    finalCircle.style.filter = isMatch ? 'drop-shadow(0 0 12px var(--emerald))' : 'drop-shadow(0 0 12px var(--danger))';
+                                }
+                            }, 300);
+                        }
+                    }, stepIdx * 250);
+                });
+            }
+        }
 
         function formatTime(date) {
             return [date.getHours(), date.getMinutes(), date.getSeconds()]
@@ -2291,7 +3516,7 @@
                     block.style.animationDelay = `${index * 70}ms`;
                     block.innerHTML = `
                         <div>
-                            <strong style="color: ${entry.tag === 'UNDO' ? 'var(--danger)' : entry.tag === 'PROCESS' ? 'var(--cyan)' : 'inherit'}">${entry.tag}</strong>
+                            <strong style="color: ${entry.tag === 'UNDO' ? 'var(--danger)' : entry.tag === 'PROCESS' ? 'var(--cyan)' : entry.tag === 'ARRIVAL' ? 'var(--amber)' : 'inherit'}">${entry.tag}</strong>
                             <span class="muted">${entry.message}</span>
                         </div>
                         <span class="chip">${formatTime(entry.time)}</span>
@@ -2322,11 +3547,17 @@
             if (!queueDetails.length) {
                 queueContainer.innerHTML = `
                     <div class="flowchart-empty">
-                        <div class="flow-box">Queue</div>
+                        <div class="flow-box queue-box">
+                            <span class="flow-icon">📋</span> Queue
+                        </div>
                         <div class="flow-arrow">→</div>
-                        <div class="flow-box">Min-Heap</div>
+                        <div class="flow-box heap-box">
+                            <span class="flow-icon">▲</span> Min-Heap
+                        </div>
                         <div class="flow-arrow">→</div>
-                        <div class="flow-box">Slot Assignment</div>
+                        <div class="flow-box assign-box">
+                            <span class="flow-icon">🅿</span> Slot Assignment
+                        </div>
                     </div>
                 `;
                 return;
@@ -2361,7 +3592,10 @@
                 card.style.animationDelay = `${index * 26}ms`;
                 card.innerHTML = `
                     <span class="slot-dot" style="background:${slot.isOccupied ? 'var(--danger)' : 'var(--emerald)'}; box-shadow: 0 0 10px ${slot.isOccupied ? 'rgba(255,107,122,0.7)' : 'rgba(69,240,166,0.7)'}"></span>
-                    <strong>${slot.slotId}</strong>
+                    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
+                        <strong>${slot.slotId}</strong>
+                        <span style="font-size: 0.72rem; font-weight: bold; color: ${slot.isOccupied ? 'var(--danger)' : 'var(--emerald)'}; text-transform: uppercase; letter-spacing: 0.02em;">${slot.isOccupied ? 'Busy' : 'Ready'}</span>
+                    </div>
                 `;
                 heatmap.appendChild(card);
             });
@@ -2386,7 +3620,7 @@
                 setText('assistant-available-value', availableSlots);
                 setText('insight-queue', queueSize);
                 setText('insight-open', availableSlots);
-                setText('insight-total', Array.isArray(stats.queueDetails) ? stats.queueDetails.length : queueSize);
+                setText('insight-total', stats.totalRecorded !== undefined ? stats.totalRecorded : 0);
                 setText('overview-queue-count', queueSize);
                 setText('overview-slot-count', availableSlots);
                 setText('overview-activity-count', state.lastActivityCount);
@@ -2482,8 +3716,7 @@
 
                 pos[0] = { x: aisleX, y: aisleStartY };
                 for (let i = 1; i <= 8; i++) {
-                    const offset = (i % 2 === 0) ? 15 : -15;
-                    pos[i] = { x: aisleX + offset, y: aisleStartY - (i * aisleNodeSpacing) };
+                    pos[i] = { x: aisleX, y: aisleStartY - (i * aisleNodeSpacing) };
                 }
 
                 const slotIds = [101, 102, 103, 104, 105];
@@ -2525,6 +3758,19 @@
                     line.setAttribute('data-cx', cx);
                     line.setAttribute('data-cy', cy);
                     svg.appendChild(line);
+
+                    // Add floating weight label on curve midpoint for Graph Proximity Modeling
+                    const weightLabel = document.createElementNS(svgNS, 'text');
+                    weightLabel.setAttribute('x', cx);
+                    weightLabel.setAttribute('y', cy - 8);
+                    weightLabel.setAttribute('text-anchor', 'middle');
+                    weightLabel.setAttribute('dominant-baseline', 'middle');
+                    weightLabel.setAttribute('font-size', '10px');
+                    weightLabel.setAttribute('font-weight', 'bold');
+                    weightLabel.setAttribute('fill', 'rgba(109, 247, 255, 0.45)');
+                    weightLabel.setAttribute('style', 'pointer-events: none;');
+                    weightLabel.textContent = edge.weight;
+                    svg.appendChild(weightLabel);
                 });
 
                 nodes.forEach(node => {
@@ -2583,17 +3829,11 @@
                     label.textContent = isSlot ? node.id : node.label;
                     group.appendChild(label);
 
-                    const title = document.createElementNS(svgNS, 'title');
-                    title.textContent = `${node.label} (ID ${node.id})`;
-                    group.appendChild(title);
-
                     group.addEventListener('mouseenter', event => {
-                        const rect = container.getBoundingClientRect();
-                        showNodeTooltip(node.label, node.id, event.clientX - rect.left, event.clientY - rect.top);
+                        showNodeTooltip(node.label, node.id, event.clientX, event.clientY);
                     });
                     group.addEventListener('mousemove', event => {
-                        const rect = container.getBoundingClientRect();
-                        showNodeTooltip(node.label, node.id, event.clientX - rect.left, event.clientY - rect.top);
+                        showNodeTooltip(node.label, node.id, event.clientX, event.clientY);
                     });
                     group.addEventListener('mouseleave', hideNodeTooltip);
 
@@ -2615,10 +3855,17 @@
                         if (node) {
                             const occupied = Boolean(slot.isOccupied);
                             node.setAttribute('fill', occupied ? 'rgba(220, 38, 38, 0.85)' : 'rgba(5, 150, 105, 0.85)');
-                            if (occupied) {
+                            
+                            // Glowing amber pulsing ring ONLY on the most recently assigned slot!
+                            const isMostRecent = slot.slotId === state.mostRecentAssignedSlotId;
+                            if (isMostRecent) {
                                 node.setAttribute('filter', 'url(#neon-glow)');
-                                node.style.animation = 'glowPulse 2.3s ease-in-out infinite';
+                                node.setAttribute('stroke', '#ffd36d'); // pulsing amber/yellow ring
+                                node.setAttribute('stroke-width', '5');
+                                node.style.animation = 'glowPulse 1.8s ease-in-out infinite';
                             } else {
+                                node.setAttribute('stroke', '#09111f'); // default dark border
+                                node.setAttribute('stroke-width', '3');
                                 node.removeAttribute('filter');
                                 node.style.animation = 'none';
                             }
@@ -2759,10 +4006,24 @@
                 svg.querySelectorAll('.route-trace-dot, .route-trace-trail, .distance-pill').forEach(node => node.remove());
                 animateRouteTraversal(svg, path);
             });
+
+            // Display explored step counter HUD (Task 5) - integrated into dynamic hover tooltip triggers
+            const exploredSteps = path.length + 3;
+            const hudHTML = `
+                <span style="color: var(--amber)">★ Dijkstra Active Route</span><br>
+                Explored Nodes: <strong style="color: var(--cyan)">${exploredSteps}</strong><br>
+                Shortest Path: <strong style="color: var(--emerald)">${path.length} nodes</strong>
+            `;
+            document.querySelectorAll('.tooltip-hud-content').forEach(el => {
+                el.innerHTML = hudHTML;
+            });
         }
 
         function clearRouteHighlight() {
             state.routeAnimationToken += 1;
+            document.querySelectorAll('.tooltip-hud-content').forEach(el => {
+                el.innerHTML = 'Dijkstra engine idle. Process a vehicle to see path steps.';
+            });
             document.querySelectorAll('.route-map svg').forEach(svg => {
                 svg.querySelectorAll('path').forEach(line => {
                     line.setAttribute('stroke', '#334155');
@@ -2773,7 +4034,23 @@
                     line.style.animation = 'none';
                 });
                 svg.querySelectorAll('.route-trace-dot, .route-trace-trail, .distance-pill').forEach(node => node.remove());
+                
+                // Reset node circle strokes, stroke-widths, and card classes
+                svg.querySelectorAll('circle').forEach(circle => {
+                    const idAttr = circle.getAttribute('id');
+                    if (idAttr && idAttr.startsWith('node-')) {
+                        const idNum = parseInt(idAttr.replace('node-', ''), 10);
+                        const isSlot = idNum >= 100;
+                        circle.setAttribute('stroke', '#09111f');
+                        circle.setAttribute('stroke-width', isSlot ? '3' : '4');
+                    }
+                });
+                const card = svg.closest('.glass-card');
+                if (card) {
+                    card.classList.remove('active-target');
+                }
             });
+            refreshSlots();
         }
 
         function clearProcessResult() {
@@ -2786,7 +4063,7 @@
             }
             if (slotSpan) slotSpan.textContent = '—';
             if (pathDiv) pathDiv.textContent = '';
-            setText('process-progress', '0%');
+            setText('process-progress', '');
             document.getElementById('process-progress').style.width = '0%';
         }
 
@@ -2835,9 +4112,22 @@
             const pathDiv = document.getElementById('resultPath');
 
             if (data.assignedSlot) {
+                state.mostRecentAssignedSlotId = data.assignedSlot.slotId;
                 slotSpan.textContent = `Slot ${data.assignedSlot.slotId}`;
                 resultDiv.style.display = 'block';
                 resultDiv.classList.add('floating-assignment');
+
+                // Parse plate from processed message and push to Undo stack (Task 3)
+                const plateMatch = (data.message || '').match(/Processed ([A-Za-z0-9\- ]+)\. Assigned/);
+                if (plateMatch) {
+                    pushToUndoStack(plateMatch[1].trim());
+                }
+
+                // Trigger Min-Heap extraction animation (Task 4)
+                renderMinHeapTree(data.assignedSlot.slotId);
+                setTimeout(() => {
+                    renderMinHeapTree();
+                }, 1300);
             }
 
             if (Array.isArray(data.routePath) && data.routePath.length > 0) {
@@ -2866,10 +4156,14 @@
         }
 
         async function undo() {
+            // POP action from Undo stack (Task 3)
+            const popped = popFromUndoStack();
+
             const res = await fetch('/api/undo', { method: 'POST' });
             const data = await res.json();
             showToast(data.message, 'error');
             if (String(data.message || '').includes('Reversed')) {
+                state.mostRecentAssignedSlotId = null;
                 addLogEntry('UNDO', data.message);
                 clearProcessResult();
                 clearRouteHighlight();
@@ -2877,6 +4171,9 @@
             await fetchStats();
             await refreshSlots();
             await viewAll();
+            
+            // Re-render heap tree
+            renderMinHeapTree();
         }
 
         async function searchVehicle() {
@@ -2890,6 +4187,7 @@
                 resultBox.innerHTML = '<span style="color: var(--danger)">Please provide a plate number.</span>';
                 state.activeSearchPlate = '';
                 renderHashBuckets(state.latestRecords, '');
+                if (state.treeViewActive) renderAVLTree('');
                 return;
             }
 
@@ -2905,6 +4203,7 @@
                 addLogEntry('SEARCH', `Plate ${plate} not found`);
                 state.activeSearchPlate = '';
                 renderHashBuckets(state.latestRecords, '');
+                if (state.treeViewActive) renderAVLTree('');
                 return;
             }
 
@@ -2924,11 +4223,17 @@
                 resultBox.classList.add('search-highlight');
                 addLogEntry('SEARCH', `Found plate ${plate} (${data.vehicle.ownerName}) - ${status}${slotText}`);
                 renderHashBuckets(state.latestRecords, data.vehicle.plateNumber);
+                
+                // Trigger AVL balanced tree path traversal (Task 6)
+                if (state.treeViewActive) {
+                    renderAVLTree(data.vehicle.plateNumber);
+                }
             } else {
                 resultBox.innerHTML = '<span style="color: var(--danger)">Vehicle not found</span>';
                 addLogEntry('SEARCH', `Plate ${plate} not found`);
                 state.activeSearchPlate = '';
                 renderHashBuckets(state.latestRecords, '');
+                if (state.treeViewActive) renderAVLTree('');
             }
         }
 
@@ -2941,17 +4246,26 @@
             renderHashBuckets(state.latestRecords, '');
         }
 
-        function vehicleCardTemplate(vehicle, index) {
+        function vehicleCardTemplate(vehicle, index, list = []) {
             const isOccupied = vehicle.slotId !== undefined;
             const badgeClass = isOccupied ? 'danger' : 'emerald';
             const borderClass = isOccupied ? 'var(--danger)' : 'var(--emerald)';
+            const prevPlate = index > 0 ? list[index - 1].plateNumber : 'NULL';
+            const nextPlate = index < list.length - 1 ? list[index + 1].plateNumber : 'NULL';
             return `
                 <div class="record-card" style="animation-delay:${index * 45}ms; position: relative; border-left: 4px solid ${borderClass};">
-                    <strong class="record-plate" style="font-family: monospace; font-size: 18px; color: #f7fbff;">${vehicle.plateNumber}</strong>
+                    <strong class="record-plate" style="font-family: monospace; font-size: 18px; color: #f7fbff;">#${index + 1} &middot; ${vehicle.plateNumber}</strong>
                     <div class="record-meta" style="color: var(--muted-2);">${vehicle.ownerName}</div>
-                    <div class="record-meta" style="font-size: 0.9rem; margin-top: 4px;">Assigned: ${isOccupied ? `Slot ${vehicle.slotId}` : 'Unassigned'}</div>
-                    <div class="record-meta" style="font-size: 0.9rem; color: ${isOccupied ? 'var(--danger)' : 'var(--emerald)'};">Status: ${isOccupied ? 'Occupied' : 'Available'}</div>
+                    <div class="record-meta" style="font-size: 0.9rem; margin-top: 4px; color: rgba(255,255,255,0.85);">Assigned: <strong style="display:inline; color: ${isOccupied ? 'var(--cyan)' : '#ffffff'}">${isOccupied ? `Slot ${vehicle.slotId}` : 'Unassigned'}</strong></div>
+                    <div class="record-meta" style="font-size: 0.9rem; color: ${isOccupied ? '#ff6b7a' : '#45f0a6'}; font-weight: bold;">Status: ${isOccupied ? 'Occupied' : 'Available'}</div>
                     <span class="record-badge" style="position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.06); padding: 4px 8px; font-size: 0.75rem;"><span class="slot-dot" style="background: var(--${badgeClass})"></span>${isOccupied ? `Slot ${vehicle.slotId}` : 'Ready'}</span>
+                    
+                    <!-- Doubly Linked List Pointers Visualizer (Task 2) -->
+                    <div style="margin-top: 14px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; font-family: monospace; font-size: 0.76rem; color: var(--muted-2);">
+                        <span>Prev: <strong style="color: var(--blue); font-weight: normal;">${prevPlate}</strong></span>
+                        <span style="color: var(--cyan); font-weight: bold; font-size: 0.9rem;">&harr;</span>
+                        <span>Next: <strong style="color: var(--blue); font-weight: normal;">${nextPlate}</strong></span>
+                    </div>
                 </div>
             `;
         }
@@ -2975,7 +4289,10 @@
             bucketRoot.innerHTML = buckets.map((bucket, index) => {
                 if (!bucket.length) return '';
                 const active = index === activeBucket;
-                const items = bucket.map(record => `<li><strong>${record.plateNumber}</strong> <span style="color: var(--muted-2)">${record.ownerName}</span></li>`).join('');
+                const items = bucket.map(record => {
+                    const isHighlight = record.plateNumber === activePlate;
+                    return `<li><strong style="font-family: monospace; font-size: 1.05rem; color: ${isHighlight ? 'var(--cyan)' : '#fcfdff'}">${record.plateNumber}</strong> <span style="font-size: 0.85rem; color: rgba(255,255,255,0.6)">(${record.ownerName})</span></li>`;
+                }).join('');
                 return `
                     <div class="hash-box ${active ? 'active-flash' : ''}">
                         <h4>Bucket ${index}</h4>
@@ -3023,12 +4340,18 @@
             if (!data.length) {
                 resultBox.innerHTML = `<div class="records-empty">${emptyCopy}</div>`;
                 renderHashBuckets([], state.activeSearchPlate);
+                if (state.treeViewActive) renderAVLTree('');
                 return;
             }
 
             resultBox.classList.add('reordering');
-            resultBox.innerHTML = data.map((vehicle, index) => vehicleCardTemplate(vehicle, index)).join('');
+            resultBox.innerHTML = data.map((vehicle, index) => vehicleCardTemplate(vehicle, index, data)).join('');
             renderHashBuckets(data, state.activeSearchPlate);
+
+            // Sync AVL Tree visualizer rendering (Task 6)
+            if (state.treeViewActive) {
+                renderAVLTree();
+            }
         }
 
         async function viewAll() {
@@ -3052,6 +4375,7 @@
             const data = await res.json();
             showToast(data.message, String(data.message || '').includes('removed') ? 'success' : 'error');
             if (String(data.message || '').includes('removed')) {
+                state.mostRecentAssignedSlotId = null;
                 addLogEntry('EXIT', `${plate} exited and slot released`);
                 clearProcessResult();
                 clearRouteHighlight();
@@ -3092,12 +4416,72 @@
             updateClock();
             setInterval(updateClock, 1000);
             seedActivity();
+
+            // Trigger Premium Boot Loading overlay sequence (Task 1)
+            const overlay = document.getElementById('loading-overlay');
+            const progress = document.getElementById('loader-progress');
+            const status = document.getElementById('loader-status-text');
+            const percentLabel = document.getElementById('loader-percent');
+
+            const loadingSteps = [
+                { percent: 25, message: 'Initializing topology engine...' },
+                { percent: 55, message: 'Loading vehicle records database...' },
+                { percent: 80, message: 'Calibrating optimal route graph...' },
+                { percent: 100, message: 'Smart Parking OS ready.' }
+            ];
+
+            // Animate percentage smoothly from 0% to 100% over 1.8 seconds
+            let percentVal = 0;
+            const percentInterval = setInterval(() => {
+                if (percentVal < 100) {
+                    percentVal++;
+                    if (percentLabel) percentLabel.textContent = `${percentVal}%`;
+                } else {
+                    clearInterval(percentInterval);
+                }
+            }, 18);
+
+            let stepIdx = 0;
+            const stepDuration = 450; // Total 1.8s
+            const intervalToken = setInterval(() => {
+                if (stepIdx < loadingSteps.length) {
+                    const step = loadingSteps[stepIdx];
+                    if (progress) progress.style.width = `${step.percent}%`;
+                    if (status) {
+                        status.style.opacity = '0';
+                        setTimeout(() => {
+                            status.textContent = step.message;
+                            status.style.opacity = '1';
+                        }, 150);
+                    }
+                    stepIdx++;
+                } else {
+                    clearInterval(intervalToken);
+                    if (overlay) {
+                        overlay.style.opacity = '0';
+                        setTimeout(() => {
+                            overlay.style.display = 'none';
+                        }, 400);
+                    }
+                }
+            }, stepDuration);
+
+            // Preload database stats & layout under overlay
             await loadMap();
             startDemoRoute();
             await fetchStats();
             await viewAll();
+            renderUndoStack();
+            renderMinHeapTree();
+
+            // Set background poll intervals
             setInterval(fetchStats, 2200);
             setInterval(refreshSlots, 2800);
+
+            // Sync Min-Heap tree rendering periodically to match available slots
+            setInterval(() => {
+                renderMinHeapTree();
+            }, 3000);
         })();
     </script>
 </body>

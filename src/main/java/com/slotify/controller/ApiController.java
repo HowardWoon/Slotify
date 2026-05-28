@@ -1,5 +1,7 @@
 package com.slotify.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,14 +42,29 @@ public class ApiController {
         return parkingService.searchVehicleStatus(plate);
     }
 
+    private List<Map<String, Object>> enrichVehicles(List<Vehicle> vehicles) {
+        List<Map<String, Object>> enriched = new ArrayList<>();
+        for (Vehicle v : vehicles) {
+            Map<String, Object> m = new HashMap<>();
+            m.put("plateNumber", v.plateNumber);
+            m.put("ownerName", v.ownerName);
+            Map<String, Object> search = parkingService.searchVehicleStatus(v.plateNumber);
+            if (Boolean.TRUE.equals(search.get("found")) && search.get("slotId") != null) {
+                m.put("slotId", search.get("slotId"));
+            }
+            enriched.add(m);
+        }
+        return enriched;
+    }
+
     @GetMapping("/all")
-    public List<Vehicle> getAll() {
-        return parkingService.getAllReverse();
+    public List<Map<String, Object>> getAll() {
+        return enrichVehicles(parkingService.getAllReverse());
     }
 
     @GetMapping("/sorted")
-    public List<Vehicle> getSorted() {
-        return parkingService.getAllSorted();
+    public List<Map<String, Object>> getSorted() {
+        return enrichVehicles(parkingService.getAllSorted());
     }
 
     @GetMapping("/map")
