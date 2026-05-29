@@ -8,17 +8,10 @@ public class SlotAssigner {
 
     public void setRouteGraph(RouteGraph graph) {
         this.routeGraph = graph;
+        updateSlotDistances();
     }
 
-    public void addSlot(ParkingSlot slot) {
-        availableSlots.insert(slot);
-        allSlots.add(slot);
-    }
-
-    public ParkingSlot assignBestSlot() {
-        if (availableSlots.isEmpty()) return null;
-        
-        // Update distances from node 0 to each available slot if RouteGraph is available
+    public void updateSlotDistances() {
         if (routeGraph != null) {
             java.util.List<ParkingSlot> tempSlots = availableSlots.getAllSlots();
             for (ParkingSlot slot : tempSlots) {
@@ -32,6 +25,17 @@ public class SlotAssigner {
             }
             availableSlots.rebuildHeap();
         }
+    }
+
+    public void addSlot(ParkingSlot slot) {
+        availableSlots.insert(slot);
+        allSlots.add(slot);
+    }
+
+    public ParkingSlot assignBestSlot() {
+        if (availableSlots.isEmpty()) return null;
+        
+        updateSlotDistances();
         
         ParkingSlot bestSlot = availableSlots.extractMin();
         if (bestSlot != null) {

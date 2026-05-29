@@ -91,4 +91,9 @@ public class ApiController {
     public Map<String, Object> exit(@RequestParam("plate") String plate) {
         return parkingService.exit(plate);
     }
+
+    @GetMapping("/route")
+    public Map<String, Object> getRoute(@RequestParam("start") int start, @RequestParam("end") int end) {
+        return parkingService.getShortestPath(start, end);
+    }
 }

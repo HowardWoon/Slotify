@@ -51,8 +51,8 @@ public class ParkingService {
         map.addRoute(5, 101, 6);
         map.addRoute(3, 102, 10);
         map.addRoute(6, 103, 7);
-        map.addRoute(8, 104, 5);
-        map.addRoute(1, 105, 12);
+        map.addRoute(7, 104, 5);
+        map.addRoute(2, 105, 12);
 
         // Set the route graph in slot assigner for distance calculation
         slotSystem.setRouteGraph(map);
@@ -188,5 +188,9 @@ public class ParkingService {
             resp.put("message", "Plate not found: " + plate);
         }
         return resp;
+    }
+
+    public java.util.Map<String, Object> getShortestPath(int start, int end) {
+        return map.findShortestPathJson(start, end);
     }
 }
