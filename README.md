@@ -149,15 +149,20 @@ dot -Tpng slotify.dot -o slotify.png
 
 ### Run
 
-**Windows**
+We have included automated execution scripts so you don't need to install anything other than Java. The scripts will automatically download Maven and all required dependencies on the first run.
+
+**Windows (Double-click)**
+Simply double-click `run.bat` in your file explorer, or run in terminal:
 ```bash
-mvnw.cmd spring-boot:run
+run.bat
 ```
 
 **macOS / Linux**
 ```bash
-./mvnw spring-boot:run
+./run.sh
 ```
+
+*(Alternatively, you can manually use `./mvnw spring-boot:run`)*
 
 **Package and run the JAR directly**
 ```bash
