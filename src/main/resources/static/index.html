@@ -38,7 +38,7 @@
 
         body {
             margin: 0;
-            font-size: 14px;
+            font-size: 16px;
             font-family: "Segoe UI Variable Text", "Segoe UI Variable Display", "Bahnschrift", "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             background:
                 radial-gradient(circle at 12% 18%, rgba(87, 199, 255, 0.22), transparent 22%),
@@ -147,7 +147,7 @@
             position: relative;
             z-index: 1;
             display: grid;
-            grid-template-columns: 276px minmax(0, 1fr);
+            grid-template-columns: minmax(200px, 276px) minmax(0, 1fr);
             min-height: 100vh;
             height: auto;
             gap: 18px;
@@ -169,7 +169,8 @@
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(26px);
             -webkit-backdrop-filter: blur(26px);
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: width 0.28s ease, transform 0.28s ease, padding 0.28s ease;
         }
 
@@ -191,12 +192,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
             gap: 12px;
         }
 
         .brand {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 14px;
         }
 
@@ -290,7 +293,7 @@
         .nav-item {
             border: 1px solid transparent;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
-            color: rgba(255, 255, 255, 0.65);
+            color: rgba(255, 255, 255, 0.85);
             display: flex;
             align-items: center;
             justify-content: flex-start;
@@ -392,6 +395,7 @@
 
         .topbar {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
             gap: 14px;
@@ -425,6 +429,7 @@
 
         .topbar-left {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             gap: 16px;
             min-width: 0;
@@ -441,7 +446,7 @@
             text-transform: uppercase;
             font-family: 'Orbitron', 'Rajdhani', 'Segoe UI Variable Display', 'Segoe UI', sans-serif;
             font-weight: 700;
-            background: linear-gradient(90deg, var(--cyan) 10%, var(--blue) 50%, var(--violet) 90%);
+            background: linear-gradient(90deg, var(--cyan) 10%, #6da1ff 50%, #b87cff 90%);
             background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
@@ -494,7 +499,7 @@
 
         .hero {
             display: grid;
-            grid-template-columns: minmax(0, 1.5fr) minmax(300px, 0.95fr);
+            grid-template-columns: minmax(0, 4.5fr) minmax(0, 5.5fr);
             gap: 16px;
         }
 
@@ -587,6 +592,7 @@
 
         .panel-title {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
@@ -755,7 +761,7 @@
         .overview-grid {
             display: grid;
             gap: 16px;
-            grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+            grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
             min-width: 0;
             min-height: 0;
         }
@@ -786,8 +792,13 @@
         }
 
         .overview-stat .metric-value {
-            font-size: clamp(2rem, 3vw, 3.4rem);
+            font-size: 36px;
+            font-weight: bold;
             margin-top: 4px;
+        }
+
+        .overview-stat.text-stat .metric-value {
+            font-size: 32px;
         }
 
         .overview-stat .metric-sub {
@@ -861,7 +872,8 @@
             right: -18px;
             top: 50%;
             transform: translateY(-50%);
-            color: rgba(109, 247, 255, 0.72);
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
             font-weight: 800;
         }
 
@@ -925,7 +937,7 @@
 
         .database-pill {
             padding: 14px 16px;
-            border-radius: 999px;
+            border-radius: 12px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.032));
             border: 1px solid rgba(148, 163, 184, 0.12);
             display: flex;
@@ -933,9 +945,13 @@
             justify-content: space-between;
             gap: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.14em;
-            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            font-size: 0.8rem;
         }
+        .database-pill.pill-blue { border-left: 4px solid var(--blue); }
+        .database-pill.pill-red { border-left: 4px solid var(--danger); }
+        .database-pill.pill-green { border-left: 4px solid var(--emerald); }
+        .database-pill.pill-amber { border-left: 4px solid var(--amber); }
 
         .database-pill strong {
             font-size: 1.25rem;
@@ -956,7 +972,7 @@
 
         .record-grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 14px;
         }
 
@@ -1014,15 +1030,14 @@
         }
 
         .hash-row {
-            display: grid;
-            grid-auto-flow: column;
-            grid-auto-columns: minmax(170px, 1fr);
+            display: flex;
+            flex-wrap: wrap;
             gap: 12px;
-            overflow: auto;
             padding-bottom: 8px;
         }
 
         .hash-box {
+            width: 170px;
             min-height: 138px;
             padding: 16px;
             border-radius: 20px;
@@ -1928,13 +1943,19 @@
             display: block;
             margin-bottom: 4px;
         }
+        @media (max-width: 1400px) {
+            .nav-stats-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .overview-counters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
 
         @media (max-width: 1320px) {
+            .app-shell { grid-template-columns: 220px minmax(0, 1fr); }
             .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .layout-split,
             .tab-content.active,
             #view-overview.active,
             #view-gate.active,
+            .overview-grid,
             .hero { grid-template-columns: 1fr; }
             .map-shell { min-height: 480px; }
         }
@@ -1942,13 +1963,22 @@
         @media (max-width: 920px) {
             body { overflow: auto; }
             .app-shell { grid-template-columns: 1fr; height: auto; }
-            .sidebar { position: relative; width: 100%; }
+            .sidebar { position: relative; width: 100%; height: auto; overflow: visible; }
             .workspace { overflow: visible; padding-bottom: 0; }
             .hero-grid, .form-row, .search-bar { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr; }
             .tab-content.active { grid-template-columns: 1fr; }
             .log-dock { position: relative; right: auto; bottom: auto; width: auto; margin: 0 18px 18px; }
+            .nav-stats-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .toast-container { left: 18px; right: 18px; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-stats-bar { grid-template-columns: 1fr; }
+            .overview-counters { grid-template-columns: 1fr; }
+            .nav-main-split { grid-template-columns: 1fr; }
+            .nav-map-legend { position: relative; flex-direction: row; flex-wrap: wrap; bottom: auto; left: auto; margin: 12px; }
+            .loader-dec-left, .loader-dec-right { display: none; }
         }
 
         /* PREMIUM HIGH-TECH radar HUD LOADING OVERLAY */
@@ -2209,13 +2239,19 @@
             border-left-width: 4px;
         }
         .empty-stack-slot {
-            border: 1px dashed rgba(148, 163, 184, 0.3);
+            border: 1px dashed rgba(109, 247, 255, 0.4);
             border-radius: 8px;
-            padding: 12px;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 12px;
             text-align: center;
-            color: rgba(148, 163, 184, 0.4);
+            color: rgba(148, 163, 184, 0.6);
             font-family: monospace;
-            font-size: 0.8rem;
+            font-size: 13px;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .stack-node.action-push {
             border-left-color: var(--emerald);
@@ -2243,7 +2279,8 @@
             border-radius: var(--radius-md);
         }
         .heap-svg-shell {
-            height: 160px;
+            height: auto;
+            min-height: 320px;
             width: 100%;
             background: rgba(0, 0, 0, 0.18);
             border-radius: var(--radius-sm);
@@ -2264,12 +2301,13 @@
             animation: fadeUp 0.3s ease both;
         }
         .avl-svg-shell {
-            height: 220px;
+            height: auto;
+            min-height: 320px;
             width: 100%;
             background: rgba(0, 0, 0, 0.18);
             border-radius: var(--radius-sm);
             margin-top: 10px;
-            overflow: hidden;
+            overflow: visible;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2312,9 +2350,10 @@
         }
         .ds-tooltip {
             position: absolute;
-            bottom: 130%;
-            left: 0;
-            z-index: 1000;
+            bottom: calc(100% + 14px);
+            left: 50%;
+            transform: translateX(-50%) translateY(8px) scale(0.97);
+            z-index: 9999;
             width: 290px;
             padding: 12px 14px;
             border-radius: var(--radius-sm);
@@ -2327,7 +2366,6 @@
             font-size: 0.82rem;
             line-height: 1.45;
             opacity: 0;
-            transform: translateY(8px) scale(0.97);
             pointer-events: none;
             transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: normal;
@@ -2337,12 +2375,31 @@
         }
         .ds-title-container:hover .ds-tooltip {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateX(-50%) translateY(0) scale(1);
             pointer-events: auto;
+        }
+        .ds-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: rgba(10, 18, 39, 0.94) transparent transparent transparent;
         }
         .ds-tooltip.right-align {
             left: auto;
             right: 0;
+            transform: translateY(8px) scale(0.97);
+        }
+        .ds-title-container:hover .ds-tooltip.right-align {
+            transform: translateY(0) scale(1);
+        }
+        .ds-tooltip.right-align::after {
+            left: auto;
+            right: 14px;
+            transform: none;
         }
 
         /* SYSTEM INTEGRATION COLLAPSIBLE TABLE */
@@ -2415,6 +2472,7 @@
         }
         .nav-stat-widget {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             gap: 12px;
             padding: 12px 18px;
@@ -2463,7 +2521,7 @@
             font-size: 11px;
             color: var(--muted-2);
             text-transform: uppercase;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.1em;
         }
         .widget-info strong {
             font-size: 15px;
@@ -2476,7 +2534,7 @@
         /* Main Split Grid Layout */
         .nav-main-split {
             display: grid;
-            grid-template-columns: minmax(0, 1.4fr) 300px;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 300px);
             gap: 16px;
             align-items: start;
         }
@@ -2562,14 +2620,14 @@
             border-left: 2px solid var(--cyan);
         }
         .intel-label {
-            font-size: 0.7rem;
+            font-size: 11px;
             color: var(--muted-2);
             text-transform: uppercase;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.1em;
         }
         .intel-value {
-            font-size: 0.95rem;
-            font-weight: 750;
+            font-size: 16px;
+            font-weight: bold;
             color: var(--cyan);
             font-family: 'Rajdhani', sans-serif;
         }
@@ -2974,7 +3032,7 @@
                     <div class="glass-card">
                         <div class="panel-head">
                             <div>
-                                <h3>Live Activity Log</h3>
+                                <h3>Live Activity Log <div class="live-pulse-dot"></div></h3>
                             </div>
                         </div>
                         <div id="overview-feed" class="feed-terminal"></div>
@@ -3030,17 +3088,17 @@
                                     <tr>
                                         <td><strong>Doubly Linked List</strong></td>
                                         <td>Dynamic storage of physical vehicle logs in the database.</td>
-                                        <td style="color: var(--emerald)">O(1) / O(n)</td>
+                                        <td style="color: rgba(69, 240, 166, 0.7)">O(1) / O(n)</td>
                                     </tr>
                                     <tr>
                                         <td><strong>FIFO Queue</strong></td>
                                         <td>Arriving vehicle timeline waiting for gate assignment.</td>
-                                        <td style="color: var(--emerald)">O(1) / O(n)</td>
+                                        <td style="color: rgba(69, 240, 166, 0.7)">O(1) / O(n)</td>
                                     </tr>
                                     <tr>
                                         <td><strong>LIFO Stack</strong></td>
                                         <td>Backtracking and reversing operations (Undo Entry).</td>
-                                        <td style="color: var(--emerald)">O(1) / O(n)</td>
+                                        <td style="color: rgba(69, 240, 166, 0.7)">O(1) / O(n)</td>
                                     </tr>
                                     <tr class="arch-extra">
                                         <td><strong>Min-Heap</strong></td>
@@ -3060,7 +3118,7 @@
                                     <tr class="arch-extra">
                                         <td><strong>Hash Table</strong></td>
                                         <td>O(1) instantaneous record retrieval by plate.</td>
-                                        <td style="color: var(--emerald)">O(1) / O(n)</td>
+                                        <td style="color: rgba(69, 240, 166, 0.7)">O(1) / O(n)</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -3103,7 +3161,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="primary full-width magnetic" data-magnetic type="button" onclick="arrive()">Add to Queue</button>
+                            <button class="primary full-width magnetic" data-magnetic type="button" onclick="arrive()">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: sub; margin-right: 4px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Add to Queue
+                            </button>
                         </div>
                     </div>
 
@@ -3111,7 +3171,7 @@
                         <div class="panel-head">
                             <div>
                                 <div class="ds-title-container">
-                                    <h3>Live Queue Timeline</h3>
+                                    <h3>Live Queue Timeline <div class="live-pulse-dot"></div></h3>
                                     <span class="ds-info-badge" style="border-color: var(--blue); color: var(--blue);">ⓘ</span>
                                     <div class="ds-tooltip" style="border-color: var(--blue)">
                                         <strong>FIFO Entry Queue</strong><br>
@@ -3232,7 +3292,7 @@
                         <div class="panel-head">
                             <div>
                                 <div class="ds-title-container">
-                                    <h3>Live Parking Lot Topology</h3>
+                                    <h3>Live Parking Lot Topology <div class="live-pulse-dot"></div></h3>
                                     <span class="ds-info-badge">ⓘ</span>
                                     <div class="ds-tooltip" id="gate-map-tooltip">
                                         <strong>Graph & Dijkstra Shortest Path</strong><br>
@@ -3248,7 +3308,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="map-shell route-map" id="gate-map">
+                        <div class="map-shell route-map" id="gate-map" style="min-height: 380px;">
                             <div class="map-overlay"></div>
                             <div class="empty-hint">Loading cinematic parking graph…</div>
                         </div>
@@ -3285,7 +3345,7 @@
                             <div class="heap-svg-shell" id="heap-svg-shell" style="min-height: 160px; display: flex; align-items: center; justify-content: center;">
                                 <!-- Dynamic SVG heap rendering -->
                             </div>
-                            <div class="table-note" style="margin-top: 8px; font-size: 0.78rem; text-align: center; color: var(--muted-2);">
+                            <div class="table-note" style="margin-top: 24px; font-size: 13px; text-align: center; color: var(--muted-2);">
                                 Comparison: <strong>Linear search: <span style="color:var(--danger)">O(n)</span></strong> &middot; <strong>Min-Heap: <span style="color:var(--emerald)">O(log n)</span></strong>
                             </div>
                         </div>
@@ -3295,7 +3355,7 @@
                         <div class="panel-head">
                             <div>
                                 <div class="ds-title-container">
-                                    <h3>Parking Slot Heatmap</h3>
+                                    <h3>Parking Slot Heatmap <div class="live-pulse-dot"></div></h3>
                                     <span class="ds-info-badge" style="border-color: var(--cyan); color: var(--cyan);">ⓘ</span>
                                     <div class="ds-tooltip" style="border-color: var(--cyan)">
                                         <strong>Parking Slot Heatmap</strong><br>
@@ -3434,7 +3494,7 @@
     <div id="toast-container" class="toast-container"></div>
     <div id="node-tooltip" class="node-tooltip"></div>
 
-    <div id="log-fab" class="log-fab" onclick="toggleSystemLog()" title="System Log">
+    <div id="log-fab" class="log-fab" onclick="toggleSystemLog()" title="System Logs & Settings">
         <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
     </div>
 
@@ -3642,17 +3702,18 @@
                 const rootX = width / 2;
                 
                 // Coordinates mapping for triangle binary tree heap
+                const rootY = 60;
                 const pos = [
-                    { x: rootX, y: 30 },
-                    { x: rootX - 70, y: 90 },
-                    { x: rootX + 70, y: 90 },
-                    { x: rootX - 110, y: 142 },
-                    { x: rootX - 35, y: 142 },
-                    { x: rootX + 35, y: 142 },
-                    { x: rootX + 110, y: 142 }
+                    { x: rootX, y: rootY },
+                    { x: rootX - 80, y: rootY + 100 },
+                    { x: rootX + 80, y: rootY + 100 },
+                    { x: rootX - 140, y: rootY + 200 },
+                    { x: rootX - 40, y: rootY + 200 },
+                    { x: rootX + 40, y: rootY + 200 },
+                    { x: rootX + 140, y: rootY + 200 }
                 ];
                 
-                let svgHTML = `<svg width="100%" height="160" style="overflow:visible;">`;
+                let svgHTML = `<svg width="100%" height="320" style="overflow:visible;">`;
                 
                 // Connect lines
                 for (let i = 0; i < available.length; i++) {
@@ -3669,20 +3730,20 @@
                     const isRoot = i === 0;
                     const isExtracting = slot.slotId === extractingSlotId;
                     
-                    let fill = 'rgba(10, 18, 39, 0.9)';
-                    let border = isRoot ? 'var(--amber)' : 'var(--emerald)';
-                    let size = isRoot ? 19 : 15;
+                    let fill = isRoot ? 'rgba(10, 18, 39, 0.9)' : '#1e293b';
+                    let fillColor = isRoot ? 'rgba(10, 18, 39, 0.9)' : '#1e293b';
+                    let strokeColor = isRoot ? 'var(--amber)' : 'var(--emerald)';
                     
                     if (isExtracting) {
-                        fill = 'rgba(255, 107, 122, 0.25)';
-                        border = 'var(--danger)';
+                        fillColor = 'rgba(255, 107, 122, 0.25)';
+                        strokeColor = 'var(--danger)';
                     }
                     
                     svgHTML += `
-                        <g>
-                            <circle cx="${point.x}" cy="${point.y}" r="${size}" fill="${fill}" stroke="${border}" stroke-width="${isRoot ? '3' : '2'}" style="transition: all 0.3s ease;" />
-                            <text x="${point.x}" y="${point.y + 1}" text-anchor="middle" dominant-baseline="middle" font-size="${isRoot ? '12px' : '10px'}" fill="#ffffff" font-weight="bold">${slot.slotId}</text>
-                            <text x="${point.x}" y="${point.y + (isRoot ? 30 : 25)}" text-anchor="middle" font-size="8px" fill="var(--muted-2)">${isRoot ? 'ROOT: ' + slot.distance + 'u' : slot.distance + ' units'}</text>
+                        <g id="heap-node-${i}" style="transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform-origin: ${point.x}px ${point.y}px;">
+                            <circle cx="${point.x}" cy="${point.y}" r="${isRoot ? 38 : 30}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="3" style="transition: all 0.3s ease; box-shadow: 0 0 10px rgba(0,0,0,0.5);" />
+                            <text x="${point.x}" y="${point.y + 1}" text-anchor="middle" dominant-baseline="middle" font-size="${isRoot ? '20px' : '16px'}" fill="#ffffff" font-weight="bold">${slot.slotId}</text>
+                            <text x="${point.x}" y="${point.y + (isRoot ? -54 : 44)}" text-anchor="middle" font-size="12px" fill="var(--muted-2)">${isRoot ? 'ROOT: ' + slot.distance + 'u' : slot.distance + ' units'}</text>
                         </g>
                     `;
                 }
@@ -3712,6 +3773,8 @@
         function renderAVLTree(searchPlate = '') {
             const shell = document.getElementById('avl-svg-shell');
             if (!shell) return;
+            state.avlAnimationToken = (state.avlAnimationToken || 0) + 1;
+            const currentToken = state.avlAnimationToken;
             
             const records = [...state.latestRecords];
             if (records.length === 0) {
@@ -3746,11 +3809,11 @@
             const rootX = width / 2;
             
             const pos = [
-                { x: rootX, y: 32 },       // Root (0)
-                { x: rootX - 90, y: 92 },  // Left (1)
-                { x: rootX + 90, y: 92 },  // Right (2)
-                { x: rootX - 145, y: 155 }, // Left-Left (3)
-                { x: rootX + 145, y: 155 }  // Right-Right (4)
+                { x: rootX, y: 65 },       // Root (0)
+                { x: rootX - 110, y: 165 },  // Left (1)
+                { x: rootX + 110, y: 165 },  // Right (2)
+                { x: rootX - 170, y: 265 }, // Left-Left (3)
+                { x: rootX + 170, y: 265 }  // Right-Right (4)
             ];
             
             const connections = [
@@ -3760,7 +3823,7 @@
                 { parent: 2, child: 4 }
             ];
             
-            let svgHTML = `<svg width="100%" height="220" style="overflow:visible;">`;
+            let svgHTML = `<svg width="100%" height="320" style="overflow:visible;">`;
             
             // Render connections
             connections.forEach(conn => {
@@ -3818,9 +3881,9 @@
                 
                 svgHTML += `
                     <g id="avl-node-${idx}" style="transition: all 0.3s ease;">
-                        <circle cx="${point.x}" cy="${point.y}" r="22" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" style="transition: all 0.3s ease;" />
-                        <text x="${point.x}" y="${point.y + 1}" text-anchor="middle" dominant-baseline="middle" font-size="10px" font-weight="bold" fill="#ffffff" font-family="monospace">${node.plateNumber}</text>
-                        <text x="${point.x}" y="${point.y + 36}" text-anchor="middle" font-size="8px" fill="var(--muted-2)">${node.ownerName}</text>
+                        <circle cx="${point.x}" cy="${point.y}" r="32" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" style="transition: all 0.3s ease;" />
+                        <text x="${point.x}" y="${point.y + 1}" text-anchor="middle" dominant-baseline="middle" font-size="14px" font-weight="bold" fill="#ffffff" font-family="monospace">${node.plateNumber}</text>
+                        <text x="${point.x}" y="${point.y + 46}" text-anchor="middle" font-size="12px" fill="var(--muted-2)">${node.ownerName}</text>
                     </g>
                 `;
             });
@@ -3832,6 +3895,7 @@
             if (searchPath.length > 1) {
                 searchPath.forEach((nodeIdx, stepIdx) => {
                     setTimeout(() => {
+                        if (currentToken !== state.avlAnimationToken) return;
                         const nodeGroup = document.getElementById(`avl-node-${nodeIdx}`);
                         if (nodeGroup) {
                             const circle = nodeGroup.querySelector('circle');
@@ -3852,6 +3916,7 @@
                         if (stepIdx === searchPath.length - 1) {
                             const isMatch = treeNodes[nodeIdx].plateNumber === searchPlate;
                             setTimeout(() => {
+                                if (currentToken !== state.avlAnimationToken) return;
                                 const finalGroup = document.getElementById(`avl-node-${nodeIdx}`);
                                 if (finalGroup) {
                                     const finalCircle = finalGroup.querySelector('circle');
@@ -3867,9 +3932,9 @@
         }
 
         function formatTime(date) {
-            return [date.getHours(), date.getMinutes(), date.getSeconds()]
-                .map(part => String(part).padStart(2, '0'))
-                .join(':');
+            const hms = [date.getHours(), date.getMinutes(), date.getSeconds()]
+                .map(part => String(part).padStart(2, '0')).join(':');
+            return `${hms}.${String(date.getMilliseconds()).padStart(3, '0')}`;
         }
 
         function formatStamp(date) {
@@ -3974,6 +4039,7 @@
 
         function renderLogEntry(entry) {
             const logContent = document.getElementById('log-entries');
+            if (!logContent) return;
             const entryDiv = document.createElement('div');
             entryDiv.className = 'log-entry';
             entryDiv.innerHTML = `
@@ -4075,6 +4141,7 @@
                 heatmap.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">Slot data is unavailable.</div>';
                 return;
             }
+            const fragment = document.createDocumentFragment();
             slots.forEach((slot, index) => {
                 const card = document.createElement('div');
                 card.className = `slot-card ${slot.isOccupied ? 'occupied' : 'available'}`;
@@ -4101,8 +4168,9 @@
                         console.error('Error fetching route', e);
                     }
                 });
-                heatmap.appendChild(card);
+                fragment.appendChild(card);
             });
+            heatmap.appendChild(fragment);
         }
 
         async function fetchStats() {
@@ -4189,8 +4257,9 @@
                 currentSlotIndex = (currentSlotIndex + 1) % slotsToVisit.length;
             }
             
+            if (window.demoInterval) clearInterval(window.demoInterval);
             playSimulationStep();
-            simulationInterval = setInterval(playSimulationStep, 6000);
+            window.demoInterval = setInterval(playSimulationStep, 6000);
         }
 
         async function loadMap() {
@@ -4264,8 +4333,8 @@
                 const edges = map.edges || [];
                 const pos = {};
                 const aisleX = 460;
-                const aisleStartY = 560;
-                const aisleEndY = 90;
+                const aisleStartY = 600;
+                const aisleEndY = 130;
                 const aisleNodeSpacing = (aisleStartY - aisleEndY) / 8;
 
                 pos[0] = { x: aisleX, y: aisleStartY };
@@ -4301,11 +4370,11 @@
 
                     const line = document.createElementNS(svgNS, 'path');
                     line.setAttribute('d', `M ${start.x} ${start.y} Q ${cx} ${cy} ${end.x} ${end.y}`);
-                    line.setAttribute('stroke', '#334155');
+                    line.setAttribute('stroke', '#94a3b8');
                     line.setAttribute('fill', 'none');
-                    line.setAttribute('stroke-width', '2');
+                    line.setAttribute('stroke-width', '4');
                     line.setAttribute('stroke-linecap', 'round');
-                    line.setAttribute('opacity', '0.5');
+                    line.setAttribute('opacity', '0.7');
                     line.setAttribute('data-weight', edge.weight);
                     line.setAttribute('data-source', edge.source);
                     line.setAttribute('data-target', edge.target);
@@ -4326,7 +4395,7 @@
 
                     const isEntrance = node.id === 0;
                     const isSlot = node.id >= 100;
-                    const radius = isEntrance ? 28 : isSlot ? 35 : 14;
+                    const radius = isEntrance ? 40 : isSlot ? 48 : 20;
                     
                     let fill, stroke, strokeWidth;
                     if (isEntrance) {
@@ -4352,25 +4421,7 @@
                     circle.style.transition = 'fill 0.22s ease, transform 0.22s ease, filter 0.22s ease';
                     group.appendChild(circle);
                     
-                    if (isEntrance) {
-                        const radar1 = document.createElementNS(svgNS, 'circle');
-                        radar1.setAttribute('r', radius);
-                        radar1.setAttribute('fill', 'none');
-                        radar1.setAttribute('stroke', stroke);
-                        radar1.setAttribute('stroke-width', '2');
-                        radar1.style.animation = 'radarPulse 3s cubic-bezier(0.1, 0.7, 1, 0.1) infinite';
-                        radar1.style.transformOrigin = 'center center';
-                        group.appendChild(radar1);
-
-                        const radar2 = document.createElementNS(svgNS, 'circle');
-                        radar2.setAttribute('r', radius);
-                        radar2.setAttribute('fill', 'none');
-                        radar2.setAttribute('stroke', stroke);
-                        radar2.setAttribute('stroke-width', '2');
-                        radar2.style.animation = 'radarPulse 3s cubic-bezier(0.1, 0.7, 1, 0.1) 1.5s infinite';
-                        radar2.style.transformOrigin = 'center center';
-                        group.appendChild(radar2);
-                    }
+                    // Radar bubbles removed at user request
 
                     const halo = document.createElementNS(svgNS, 'circle');
                     halo.setAttribute('r', radius + 10);
@@ -4383,7 +4434,7 @@
                     label.setAttribute('class', 'map-node-label');
                     label.setAttribute('text-anchor', 'middle');
                     label.setAttribute('dominant-baseline', 'middle');
-                    label.setAttribute('font-size', isSlot ? '14px' : '16px');
+                    label.setAttribute('font-size', isSlot ? '26px' : '30px');
                     label.setAttribute('font-weight', '700');
                     label.setAttribute('fill', '#ffffff');
                     label.style.fill = '#ffffff';
@@ -4393,7 +4444,7 @@
                     label.style.filter = 'none';
                     
                     if (isSlot) {
-                        label.style.textShadow = '0 1px 4px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1)';
+                        label.style.textShadow = '0 2px 6px rgba(0,0,0,0.9), 0 0 3px rgba(0,0,0,1)';
                     } else {
                         label.style.textShadow = 'none';
                     }
@@ -4402,8 +4453,8 @@
                         label.setAttribute('x', 0);
                         label.setAttribute('y', 0);
                     } else {
-                        const labelOffsetY = isEntrance ? radius + 20 : 6;
-                        const labelOffsetX = isEntrance ? 0 : radius + 20;
+                        const labelOffsetY = isEntrance ? radius + 25 : 8;
+                        const labelOffsetX = isEntrance ? 0 : radius + 25;
                         if (!isEntrance) label.setAttribute('text-anchor', 'start');
                         label.setAttribute('x', labelOffsetX);
                         label.setAttribute('y', labelOffsetY);
@@ -4486,19 +4537,11 @@
                             const occupied = Boolean(slot.isOccupied);
                             const isMostRecent = slot.slotId === state.mostRecentAssignedSlotId;
                             
-                            if (isMostRecent) {
-                                node.setAttribute('fill', occupied ? 'rgba(239, 68, 68, 0.25)' : 'rgba(16, 185, 129, 0.25)');
-                                node.setAttribute('filter', 'url(#neon-glow)');
-                                node.setAttribute('stroke', '#ffd36d'); // pulsing amber/yellow ring
-                                node.setAttribute('stroke-width', '5');
-                                node.style.animation = 'glowPulse 1.8s ease-in-out infinite';
-                            } else {
-                                node.setAttribute('fill', occupied ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)');
-                                node.setAttribute('stroke', occupied ? '#ff6b7a' : '#45f0a6');
-                                node.setAttribute('stroke-width', '3');
-                                node.removeAttribute('filter');
-                                node.style.animation = 'none';
-                            }
+                            node.setAttribute('fill', occupied ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)');
+                            node.setAttribute('stroke', occupied ? '#ff6b7a' : '#45f0a6');
+                            node.setAttribute('stroke-width', '3');
+                            node.removeAttribute('filter');
+                            node.style.animation = 'none';
                         }
                     });
                 });
@@ -4511,6 +4554,8 @@
         }
 
         function animateRouteTraversal(svg, path) {
+            const token = ++state.routeAnimationToken;
+            
             // Create a premium vehicle emoji node
             const dot = document.createElementNS(svgNS, 'text');
             dot.setAttribute('font-size', '20px');
@@ -4533,9 +4578,10 @@
                     }
                 }
             }
-            svg.appendChild(dot);
+            if (token === state.routeAnimationToken) {
+                svg.appendChild(dot);
+            }
 
-            const token = ++state.routeAnimationToken;
             path.forEach((nodeId, index) => {
                 setTimeout(() => {
                     if (token !== state.routeAnimationToken) {
@@ -4584,6 +4630,18 @@
                     line.style.filter = 'none';
                     line.style.animation = 'none';
                 });
+
+                if (state.slotsData) {
+                    state.slotsData.forEach(slot => {
+                        const node = svg.querySelector(`#node-${slot.slotId}`);
+                        if (node) {
+                            const occupied = Boolean(slot.isOccupied);
+                            node.setAttribute('stroke', occupied ? '#ff6b7a' : '#45f0a6');
+                            node.setAttribute('stroke-width', '3');
+                            node.removeAttribute('filter');
+                        }
+                    });
+                }
 
                 let totalWeight = 0;
                 for (let index = 0; index < path.length - 1; index++) {
@@ -4701,10 +4759,7 @@
                         if (isEntrance) {
                             circle.setAttribute('stroke', '#57c7ff');
                             circle.setAttribute('stroke-width', '4');
-                        } else if (isSlot) {
-                            circle.setAttribute('stroke', '#45f0a6');
-                            circle.setAttribute('stroke-width', '3');
-                        } else {
+                        } else if (!isSlot) {
                             circle.setAttribute('stroke', '#64748b');
                             circle.setAttribute('stroke-width', '2');
                         }
@@ -4741,7 +4796,10 @@
 
             pathDiv.innerHTML = `
                 <div class="path-row" style="flex-wrap: wrap;">${pathLabels.join(' <span style="color: var(--muted); margin: 0 4px;">→</span> ')}</div>
-                <div class="table-note" style="margin-top:12px;">Distance: ${distance} units</div>
+                <div class="table-note" style="margin-top:12px; font-size: 14px; color: var(--text);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: sub; margin-right: 4px; color: var(--cyan);"><path d="M3 3v18h18"/><path d="M18 17l-5-5-4 4-5-5"/></svg>
+                    Distance: <strong style="color: var(--cyan);">${distance} units</strong>
+                </div>
             `;
             resultDiv.style.display = 'block';
             resultDiv.classList.add('floating-assignment');
@@ -4822,103 +4880,111 @@
                 return;
             }
 
-            const res = await fetch(`/api/arrive?plate=${encodeURIComponent(plate)}&name=${encodeURIComponent(name)}`, { method: 'POST' });
-            const data = await res.json();
-            showToast(`${plate} added to queue.`, 'success');
-            addLogEntry('ARRIVAL', `${plate} (${name}) added to queue`);
-            document.getElementById('plate').value = '';
-            document.getElementById('name').value = '';
-            if (data.queueSize !== undefined) {
-                animateCounter(document.getElementById('stat-queue'), Number(data.queueSize));
+            try {
+                const res = await fetch(`/api/arrive?plate=${encodeURIComponent(plate)}&name=${encodeURIComponent(name)}`, { method: 'POST' });
+                const data = await res.json();
+                showToast(`${plate} added to queue.`, 'success');
+                addLogEntry('ARRIVAL', `${plate} (${name}) added to queue`);
+                document.getElementById('plate').value = '';
+                document.getElementById('name').value = '';
+                if (data.queueSize !== undefined) {
+                    animateCounter(document.getElementById('stat-queue'), Number(data.queueSize));
+                }
+                await fetchStats();
+                await refreshSlots();
+                await viewAll();
+            } catch (error) {
+                showToast('Network error or server unavailable', 'error');
             }
-            await fetchStats();
-            await refreshSlots();
-            await viewAll();
         }
 
         async function process() {
             driveProcessProgress();
-            const res = await fetch('/api/process', { method: 'POST' });
-            const data = await res.json();
-            showToast(data.message, data.assignedSlot ? 'success' : 'info');
+            try {
+                const res = await fetch('/api/process', { method: 'POST' });
+                const data = await res.json();
+                showToast(data.message, data.assignedSlot ? 'success' : 'info');
 
-            const resultDiv = document.getElementById('processResult');
-            const slotSpan = document.getElementById('resultSlot');
-            const pathDiv = document.getElementById('resultPath');
+                const resultDiv = document.getElementById('processResult');
+                const slotSpan = document.getElementById('resultSlot');
+                const pathDiv = document.getElementById('resultPath');
 
-            if (data.assignedSlot) {
-                state.mostRecentAssignedSlotId = data.assignedSlot.slotId;
-                state.activeHighlightedSlotId = data.assignedSlot.slotId;
-                slotSpan.textContent = `Slot ${data.assignedSlot.slotId}`;
-                resultDiv.style.display = 'block';
-                resultDiv.classList.add('floating-assignment');
+                if (data.assignedSlot) {
+                    state.mostRecentAssignedSlotId = data.assignedSlot.slotId;
+                    state.activeHighlightedSlotId = data.assignedSlot.slotId;
+                    slotSpan.textContent = `Slot ${data.assignedSlot.slotId}`;
+                    resultDiv.style.display = 'block';
+                    resultDiv.classList.add('floating-assignment');
 
-                // Parse plate from processed message and push to Undo stack (Task 3)
-                const plateMatch = (data.message || '').match(/Processed ([A-Za-z0-9\- ]+)\. Assigned/);
-                if (plateMatch) {
-                    pushToUndoStack(plateMatch[1].trim());
+                    const plateMatch = (data.message || '').match(/Processed ([A-Za-z0-9\- ]+)\. Assigned/);
+                    if (plateMatch) {
+                        pushToUndoStack(plateMatch[1].trim());
+                    }
+
+                    renderMinHeapTree(data.assignedSlot.slotId);
+                    setTimeout(() => {
+                        renderMinHeapTree();
+                    }, 1300);
+
+                    const activeTerminalEl = document.getElementById('telemetry-active-terminal');
+                    if (activeTerminalEl) activeTerminalEl.textContent = `SLOT ${data.assignedSlot.slotId}`;
+
+                    await fetchStats();
+                    await refreshSlots();
+                    await viewAll(); 
                 }
 
-                // Trigger Min-Heap extraction animation (Task 4)
-                renderMinHeapTree(data.assignedSlot.slotId);
-                setTimeout(() => {
-                    renderMinHeapTree();
-                }, 1300);
+                if (Array.isArray(data.routePath) && data.routePath.length > 0) {
+                    displayRoutePathDetails(data.routePath, data.routeDistance, true);
+                    highlightRoute(data.routePath);
+                }
 
-                // Dynamically update Overview Telemetry tags
-                const activeTerminalEl = document.getElementById('telemetry-active-terminal');
-                if (activeTerminalEl) activeTerminalEl.textContent = `SLOT ${data.assignedSlot.slotId}`;
+                if (data.assignedSlot) {
+                    addLogEntry('PROCESS', `Processed vehicle - Slot ${data.assignedSlot.slotId}, Distance ${data.routeDistance} units`);
+                } else if (String(data.message || '').toLowerCase().includes('full')) {
+                    addLogEntry('PROCESS', 'Processing failed - parking is full');
+                } else if (String(data.message || '').toLowerCase().includes('empty')) {
+                    addLogEntry('PROCESS', 'Processing failed - queue is empty');
+                }
 
-                // Force Data Synchronization
                 await fetchStats();
                 await refreshSlots();
-                await viewAll(); // Re-render database UI 
+                await viewAll();
+            } catch (error) {
+                showToast('Network error or server unavailable', 'error');
             }
-
-            if (Array.isArray(data.routePath) && data.routePath.length > 0) {
-                displayRoutePathDetails(data.routePath, data.routeDistance, true);
-                highlightRoute(data.routePath);
-            }
-
-            if (data.assignedSlot) {
-                addLogEntry('PROCESS', `Processed vehicle - Slot ${data.assignedSlot.slotId}, Distance ${data.routeDistance} units`);
-            } else if (String(data.message || '').toLowerCase().includes('full')) {
-                addLogEntry('PROCESS', 'Processing failed - parking is full');
-            } else if (String(data.message || '').toLowerCase().includes('empty')) {
-                addLogEntry('PROCESS', 'Processing failed - queue is empty');
-            }
-
-            await fetchStats();
-            await refreshSlots();
-            await viewAll();
         }
 
         async function undo() {
             // POP action from Undo stack (Task 3)
             const popped = popFromUndoStack();
 
-            const res = await fetch('/api/undo', { method: 'POST' });
-            const data = await res.json();
-            showToast(data.message, 'error');
-            if (String(data.message || '').includes('Reversed')) {
-                state.mostRecentAssignedSlotId = null;
-                addLogEntry('UNDO', data.message);
-                clearProcessResult();
-                clearRouteHighlight();
+            try {
+                const res = await fetch('/api/undo', { method: 'POST' });
+                const data = await res.json();
+                showToast(data.message, 'error');
+                if (String(data.message || '').includes('Reversed')) {
+                    state.mostRecentAssignedSlotId = null;
+                    addLogEntry('UNDO', data.message);
+                    clearProcessResult();
+                    clearRouteHighlight();
+                }
+                await fetchStats();
+                await refreshSlots();
+                await viewAll();
+                
+                renderMinHeapTree();
+            } catch (error) {
+                showToast('Network error or server unavailable', 'error');
             }
-            await fetchStats();
-            await refreshSlots();
-            await viewAll();
-            
-            // Re-render heap tree
-            renderMinHeapTree();
         }
 
         async function searchVehicle() {
             const plate = document.getElementById('searchPlate').value.trim();
             const resultBox = document.getElementById('search-result');
             resultBox.classList.add('active-target');
-            setTimeout(() => {
+            if (window.searchHighlightTimeout) clearTimeout(window.searchHighlightTimeout);
+            window.searchHighlightTimeout = setTimeout(() => {
                 resultBox.classList.remove('active-target');
             }, 3000);
             if (!plate) {
@@ -4996,7 +5062,7 @@
                     <div class="record-meta" style="color: var(--muted-2);">${vehicle.ownerName}</div>
                     <div class="record-meta" style="font-size: 0.9rem; margin-top: 4px; color: rgba(255,255,255,0.85);">Assigned: <strong style="display:inline; color: ${isOccupied ? 'var(--cyan)' : '#ffffff'}">${isOccupied ? `Slot ${vehicle.slotId}` : 'Unassigned'}</strong></div>
                     <div class="record-meta" style="font-size: 0.9rem; color: ${isOccupied ? '#ff6b7a' : '#45f0a6'}; font-weight: bold;">Status: ${isOccupied ? 'Occupied' : 'Available'}</div>
-                    <span class="record-badge" style="position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.06); padding: 4px 8px; font-size: 0.75rem;"><span class="slot-dot" style="background: var(--${badgeClass})"></span>${isOccupied ? `Slot ${vehicle.slotId}` : 'Ready'}</span>
+                    <span class="record-badge" style="position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.06); padding: 4px 8px; font-size: 0.75rem; white-space: nowrap;"><span class="slot-dot" style="background: var(--${badgeClass})"></span>${isOccupied ? `Slot ${vehicle.slotId}` : 'Ready'}</span>
                     
                     <!-- Doubly Linked List Pointers Visualizer (Task 2) -->
                     <div style="margin-top: 14px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; font-family: monospace; font-size: 12px; color: #a4b3d1;">
@@ -5058,37 +5124,40 @@
         }
 
         async function renderRecords(endpoint, header, emptyCopy, mode) {
-            const resultBox = document.getElementById('all-records');
-            const headerBox = document.getElementById('records-header');
-            resultBox.classList.remove('reordering');
-            resultBox.innerHTML = `
-                <div class="record-card skeleton"><div class="skeleton-line" style="width: 60%"></div><div class="skeleton-line" style="width: 82%"></div><div class="skeleton-line" style="width: 70%"></div></div>
-                <div class="record-card skeleton"><div class="skeleton-line" style="width: 52%"></div><div class="skeleton-line" style="width: 76%"></div><div class="skeleton-line" style="width: 64%"></div></div>
-                <div class="record-card skeleton"><div class="skeleton-line" style="width: 44%"></div><div class="skeleton-line" style="width: 74%"></div><div class="skeleton-line" style="width: 68%"></div></div>
-            `;
+            try {
+                const resultBox = document.getElementById('all-records');
+                const headerBox = document.getElementById('records-header');
+                resultBox.classList.remove('reordering');
+                resultBox.innerHTML = `
+                    <div class="record-card skeleton"><div class="skeleton-line" style="width: 60%"></div><div class="skeleton-line" style="width: 82%"></div><div class="skeleton-line" style="width: 70%"></div></div>
+                    <div class="record-card skeleton"><div class="skeleton-line" style="width: 52%"></div><div class="skeleton-line" style="width: 76%"></div><div class="skeleton-line" style="width: 64%"></div></div>
+                    <div class="record-card skeleton"><div class="skeleton-line" style="width: 44%"></div><div class="skeleton-line" style="width: 74%"></div><div class="skeleton-line" style="width: 68%"></div></div>
+                `;
 
-            const res = await fetch(endpoint);
-            const data = await res.json();
-            state.latestRecords = Array.isArray(data) ? data : [];
-            setText('insight-total', state.latestRecords.length);
-            if (headerBox) headerBox.textContent = header;
-            document.getElementById('btn-unsorted').className = mode === 'all' ? 'primary magnetic' : 'secondary magnetic';
-            document.getElementById('btn-sorted').className = mode === 'sorted' ? 'primary magnetic' : 'secondary magnetic';
+                const res = await fetch(endpoint);
+                const data = await res.json();
+                state.latestRecords = Array.isArray(data) ? data : [];
+                setText('insight-total', state.latestRecords.length);
+                if (headerBox) headerBox.textContent = header;
+                document.getElementById('btn-unsorted').className = mode === 'all' ? 'primary magnetic' : 'secondary magnetic';
+                document.getElementById('btn-sorted').className = mode === 'sorted' ? 'primary magnetic' : 'secondary magnetic';
 
-            if (!data.length) {
-                resultBox.innerHTML = `<div class="records-empty">${emptyCopy}</div>`;
-                renderHashBuckets([], state.activeSearchPlate);
-                if (state.treeViewActive) renderAVLTree('');
-                return;
-            }
+                if (!data.length) {
+                    resultBox.innerHTML = `<div class="records-empty">${emptyCopy}</div>`;
+                    renderHashBuckets([], state.activeSearchPlate);
+                    if (state.treeViewActive) renderAVLTree('');
+                    return;
+                }
 
-            resultBox.classList.add('reordering');
-            resultBox.innerHTML = data.map((vehicle, index) => vehicleCardTemplate(vehicle, index, data)).join('');
-            renderHashBuckets(data, state.activeSearchPlate);
+                resultBox.classList.add('reordering');
+                resultBox.innerHTML = data.map((vehicle, index) => vehicleCardTemplate(vehicle, index, data)).join('');
+                renderHashBuckets(data, state.activeSearchPlate);
 
-            // Sync AVL Tree visualizer rendering (Task 6)
-            if (state.treeViewActive) {
-                renderAVLTree();
+                if (state.treeViewActive) {
+                    renderAVLTree();
+                }
+            } catch (error) {
+                console.error('Network Error:', error);
             }
         }
 
@@ -5109,21 +5178,25 @@
                 return;
             }
 
-            const res = await fetch(`/api/exit?plate=${encodeURIComponent(plate)}`, { method: 'POST' });
-            const data = await res.json();
-            showToast(data.message, String(data.message || '').includes('removed') ? 'success' : 'error');
-            if (String(data.message || '').includes('removed')) {
-                state.mostRecentAssignedSlotId = null;
-                addLogEntry('EXIT', `${plate} exited and slot released`);
-                clearProcessResult();
-                clearRouteHighlight();
-            } else {
-                addLogEntry('EXIT', `${plate} exit failed - plate not found`);
+            try {
+                const res = await fetch(`/api/exit?plate=${encodeURIComponent(plate)}`, { method: 'POST' });
+                const data = await res.json();
+                showToast(data.message, String(data.message || '').includes('removed') ? 'success' : 'error');
+                if (String(data.message || '').includes('removed')) {
+                    state.mostRecentAssignedSlotId = null;
+                    addLogEntry('EXIT', `${plate} exited and slot released`);
+                    clearProcessResult();
+                    clearRouteHighlight();
+                } else {
+                    addLogEntry('EXIT', `${plate} exit failed - plate not found`);
+                }
+                document.getElementById('exitPlate').value = '';
+                await fetchStats();
+                await refreshSlots();
+                await viewAll();
+            } catch (error) {
+                showToast('Network error or server unavailable', 'error');
             }
-            document.getElementById('exitPlate').value = '';
-            await fetchStats();
-            await refreshSlots();
-            await viewAll();
         }
 
         async function loadDatabasePanels() {

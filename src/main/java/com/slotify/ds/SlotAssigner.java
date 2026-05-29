@@ -20,6 +20,8 @@ public class SlotAssigner {
                     int distance = (Integer) pathInfo.get("distance");
                     if (distance != -1) {
                         slot.distance = distance;
+                    } else {
+                        slot.distance = Integer.MAX_VALUE;
                     }
                 }
             }
@@ -34,8 +36,6 @@ public class SlotAssigner {
 
     public ParkingSlot assignBestSlot() {
         if (availableSlots.isEmpty()) return null;
-        
-        updateSlotDistances();
         
         ParkingSlot bestSlot = availableSlots.extractMin();
         if (bestSlot != null) {

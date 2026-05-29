@@ -16,6 +16,10 @@ public class GateManager {
         entranceQueue.add(v);
     }
 
+    public void removeFromQueue(String plate) {
+        entranceQueue.removeIf(v -> v.plateNumber != null && v.plateNumber.equals(plate));
+    }
+
     public void returnToFront(Vehicle v) {
         if (entranceQueue instanceof LinkedList) {
             LinkedList<Vehicle> linkedList = (LinkedList<Vehicle>) entranceQueue;
@@ -34,6 +38,9 @@ public class GateManager {
     }
 
     public void recordProcessedAction(Vehicle vehicle, ParkingSlot slot) {
+        if (undoStack.size() >= 50) {
+            undoStack.remove(0); // Prevent memory leak by removing oldest action
+        }
         undoStack.push(new UndoAction(vehicle, slot));
     }
 

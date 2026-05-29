@@ -15,14 +15,40 @@ import com.slotify.service.ParkingService;
 @SpringBootApplication
 public class SlotifyApplication {
     public static void main(String[] args) {
+        int port = 8081;
+        if (!isPortAvailable(port)) {
+            int altPort = 8082;
+            while (altPort < 9000) {
+                if (isPortAvailable(altPort)) {
+                    port = altPort;
+                    break;
+                }
+                altPort++;
+            }
+        }
+        System.setProperty("server.port", String.valueOf(port));
         SpringApplication.run(SlotifyApplication.class, args);
+        System.out.println("Slotify Application started successfully. Access the dashboard at: http://localhost:" + port);
+    }
+
+    private static boolean isPortAvailable(int port) {
+        try (java.net.ServerSocket serverSocket = new java.net.ServerSocket(port)) {
+            return true;
+        } catch (java.io.IOException e) {
+            return false;
+        }
     }
 
     @Bean
     @SuppressWarnings("unused")
-    CommandLineRunner demo(ParkingService parkingService) {
+    CommandLineRunner demo(ParkingService parkingService, org.springframework.core.env.Environment env) {
         return args -> {
+            String port = env.getProperty("local.server.port");
+            if (port == null) {
+                port = System.getProperty("server.port", "8081");
+            }
             System.out.println("Slotify boot demo");
+            System.out.println("Interactive Dashboard URL: http://localhost:" + port);
             printMap(parkingService.arriveAtGate("ABC-123", "Alice"));
             printMap(parkingService.arriveAtGate("XYZ-999", "Bob"));
             printMap(parkingService.arriveAtGate("DEF-456", "Carol"));

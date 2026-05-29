@@ -58,21 +58,32 @@ public class ParkingService {
         slotSystem.setRouteGraph(map);
     }
 
-    public Map<String, Object> arriveAtGate(String plate, String name) {
+    public synchronized Map<String, Object> arriveAtGate(String plate, String name) {
+        java.util.Objects.requireNonNull(plate, "Plate cannot be null");
+        Map<String, Object> response = new HashMap<>();
+        if (db.searchBST(plate) != null) {
+            response.put("message", "Vehicle " + plate + " already exists.");
+            return response;
+        }
+
         Vehicle v = new Vehicle(plate, name);
         gate.arriveAtGate(v);
         allVehicles.addVehicle(v);
         db.insertRecord(v);
         
-        Map<String, Object> response = new HashMap<>();
         response.put("message", "Vehicle " + plate + " added to queue.");
         response.put("queueSize", gate.getQueueSize());
         return response;
     }
 
-    public Map<String, Object> processNext() {
+    public synchronized Map<String, Object> processNext() {
         Map<String, Object> response = new HashMap<>();
-        Vehicle v = gate.processNextVehicle();
+        Vehicle v;
+        while ((v = gate.processNextVehicle()) != null) {
+            if (db.searchBST(v.plateNumber) != null) {
+                break; // Found a valid vehicle that hasn't exited
+            }
+        }
         if (v == null) {
             response.put("message", "Queue is empty.");
             return response;
@@ -97,11 +108,11 @@ public class ParkingService {
         return response;
     }
 
-    public Map<String, Object> undo() {
+    public synchronized Map<String, Object> undo() {
         Map<String, Object> response = new HashMap<>();
         UndoAction action = gate.undoLastEntry();
         if (action != null) {
-            if (action.assignedSlot != null) {
+            if (action.assignedSlot != null && action.assignedSlot == db.getAssignedSlot(action.vehicle.plateNumber)) {
                 slotSystem.releaseSlot(action.assignedSlot);
                 db.removeAssignment(action.vehicle.plateNumber);
             }
@@ -173,7 +184,9 @@ public class ParkingService {
         return slotSystem.getAllSlots();
     }
 
-    public java.util.Map<String, Object> exit(String plate) {
+    public synchronized java.util.Map<String, Object> exit(String plate) {
+        java.util.Objects.requireNonNull(plate, "Plate cannot be null");
+        gate.removeFromQueue(plate);
         java.util.Map<String, Object> resp = new java.util.HashMap<>();
         com.slotify.model.ParkingSlot slot = db.getAssignedSlot(plate);
         boolean removed = db.removeRecord(plate);
